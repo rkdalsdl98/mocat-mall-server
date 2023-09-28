@@ -1,0 +1,97 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id Int @id @default(autoincrement())
+  email String @unique
+  password String
+  salt String
+  name String
+  address String
+  orders String[]
+  coupons coupon[] @relation("Coupons")
+  qaboards qaboard[] @relation("QABoard")
+  baskets Json[] // 상품의 아이디와 간단한 정보를 담은 객체를 Json 형태로 저장
+  createdAt DateTime @default(now())
+  isAdmin Boolean @default(false)
+}
+
+model coupon {
+  salePrice Int @default(0)
+  validAt DateTime @default(now())
+  couponNumber String @unique
+  user user @relation("Coupons", fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+}
+
+model qaboard {
+  id Int @id @default(autoincrement())
+  title String @default("배송관련 문의")
+  contentText String
+  productId Int @default(-1) // 기본 값 -1은 선택된 상품 없음
+                             // 할당 된 아이디로 조인 검색
+  visited Int @default(0)
+  writerEmail String
+  writerName String
+  reply reply[] @relation("Replys")
+  user user @relation("QABoard", fields: [userId], references: [id], onDelete: Cascade)
+  userId Int @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model reply {
+  id Int @id @default(autoincrement())
+  contentText String
+  writerEmail String
+  writerName String
+  qaboard qaboard @relation("Replys", fields: [boardId], references: [id], onDelete: Cascade)
+  boardId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model product {
+  id Int @id @default(autoincrement())
+  productName String
+  price Int @default(0)
+  thumbnail String @default("https://firebasestorage.googleapis.com/v0/b/mocatmall.appspot.com/o/exception%2Fnotfound.PNG?alt=media&token=1af683ff-9a2b-4ca2-aea4-98c742c22235")
+  productDetail productdetail? @relation("Detail")
+}
+
+model productdetail {
+  id Int @id @default(autoincrement())
+  product product @relation("Detail", fields: [productId], references: [id], onDelete: Cascade)
+  productId Int @unique
+  colors String[]
+  sizes String[]
+  images String[]
+  description String
+}
+
+model order {
+  orderId String @unique
+  paymentKey String
+  delivery delivery? @relation("Delivery")
+}
+
+model delivery {
+  id Int @id @default(autoincrement())
+  order order @relation("Delivery", fields: [orderId], references: [orderId], onDelete: Cascade)
+  orderId String @unique
+  address String
+  detailAddress String
+  memo String
+  state String
+  productId Int[]
+}
