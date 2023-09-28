@@ -1,45 +1,20 @@
-# 인트로  
+메일 시스템 뼈대 구현 (무조건 정리 필요)
 
->크게 NestJS와 Flutter로 구성된 쇼핑몰 앱, 웹 1인 개발 프로젝트입니다.  
-현재 까지 공부한 모든 내용을 한번에 정리하고 적용하고 진행하며 일어나는 시행착오들을 직접 몸소 겪으며 더욱 발전하기 위해 진행하게 되었습니다.  
+유저 라우터 생성 해야 함
 
-<div align=center><h1>📚 STACKS</h1></div>  
+유저 레포지토리 루틴 모두 만들었음
+유저 서비스 루틴 만들어야 함
+유저와 서버간의 객체 매핑을 위한 Dto 만들어야 함
+(Dto와 Entity간의 필터 타입이 필요함)
++ 게시판
++ 주문
++ 상품
 
-<div align=center>
-  <br>
-  <img src="https://img.shields.io/badge/nestjs-E0234E?style=for-the-badge&logo=nestjs&logoColor=white">
-  <img src="https://img.shields.io/badge/typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
-  <img src="https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=Node.js&logoColor=white">
-  <br>
-  <img src="https://img.shields.io/badge/prisma-2D3748?style=for-the-badge&logo=prisma&logoColor=white">
-  <img src="https://img.shields.io/badge/postgresql-4169E1?style=for-the-badge&logo=postgresql&logoColor=white">
-  <img src="https://img.shields.io/badge/redis-DC382D?style=for-the-badge&logo=redis&logoColor=white">
-  <img src="https://img.shields.io/badge/firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=white">
-  <br>
-  <img src="https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white">
-  <img src="https://img.shields.io/badge/jenkins-D24939?style=for-the-badge&logo=jenkins&logoColor=white">
-  <br>
-  <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-  <img src="https://img.shields.io/badge/git-F05032?style=for-the-badge&logo=git&logoColor=white">
-  <img src="https://img.shields.io/badge/swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=white">
-  <br>
-</div>  
+JWT도입 해야 함
 
-# Diagram
+가드 설정 필요 (인증이 필요한 파이프 만)
 
-## Sequnce  
+인터셉터 도입 필요 
+(여기서 Dto 분해해서 서버에서 사용가능하게 보낼땐 클라이언트가 사용가능하게 매핑을 해줄꺼임)
 
-![Login](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/ae696e4c-938c-4878-84cf-be69254f5d3b)  
-
-![Regist](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/d0257b35-3bcb-4305-8369-b9ab94709760)  
-
-![QABoard](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/491ccc15-5052-4931-b337-625becad1c82)  
-
-
-## Payment Senario  
-
-![Senario](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/77f0500b-585a-4036-9549-414cfcfd0b00)  
-
-## ERD  
-
-![ERD](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/2b4249d7-6ff6-4b22-8878-ee48a04fe1d4)  
+여기 까지가 서버 뼈대, 다듬고 수정은 뼈대 이후에
