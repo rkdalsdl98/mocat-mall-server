@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
 import { SwaggerSetting } from './swagger.setting';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -16,6 +17,8 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   
   SwaggerSetting(app)
+
+  app.useGlobalInterceptors(new LoggingInterceptor())
   
   await app.listen(3000);
 }

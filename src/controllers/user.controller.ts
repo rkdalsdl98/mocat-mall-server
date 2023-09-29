@@ -1,6 +1,7 @@
-import { TypedRoute, TypedParam, TypedQuery } from "@nestia/core";
-import { Query, Controller } from "@nestjs/common";
-import { IUserQuery } from "src/interface/query/iquery";
+import { TypedRoute, TypedQuery } from "@nestia/core";
+import { Controller, UseInterceptors } from "@nestjs/common";
+import { MappingInterceptor } from "src/common/interceptors/mapping.interceptor";
+import { IUserQuery } from "src/query/iuser.query";
 import { UserService } from "src/services/user.service";
 
 @Controller('user')
@@ -10,14 +11,17 @@ export class UserController {
     ){}
 
     @TypedRoute.Get()
+    @UseInterceptors(new MappingInterceptor())
     async getUsers() {
+        console.log("controller")
         return this.userService.getUsers()
     }
 
     @TypedRoute.Patch()
+    @UseInterceptors(new MappingInterceptor())
     async updateUser(
-        @TypedQuery() query : IUserQuery.IUpdate
+        @TypedQuery() query : IUserQuery.IUserQueryUpdateOptions
     ) {
-        console.log(query)
+        return "Hello"
     }
 }
