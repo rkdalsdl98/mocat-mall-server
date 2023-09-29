@@ -29,11 +29,11 @@
 
 ## Sequnce  
 
-![Login](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/ae696e4c-938c-4878-84cf-be69254f5d3b)  
+![Login](https://github.com/rkdalsdl98/mocat-mall-server/assets/77562358/0ea91b4c-ffe6-4ab5-a9a5-dfd1d01f03fa)  
 
 ![Regist](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/d0257b35-3bcb-4305-8369-b9ab94709760)  
 
-![QABoard](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/491ccc15-5052-4931-b337-625becad1c82)  
+![QABoard](https://github.com/rkdalsdl98/mocat-mall-server/assets/77562358/5754a5af-0bec-49b7-96f4-4ab6f2ae730a)  
 
 
 ## Payment Senario  
