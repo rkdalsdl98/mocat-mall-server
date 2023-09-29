@@ -5,8 +5,8 @@ import {
     NestInterceptor,
     BadRequestException
 } from "@nestjs/common";
-import { Observable, catchError, of } from "rxjs";
-import { tap, map } from 'rxjs/operators';
+import { Observable, catchError } from "rxjs";
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class MappingInterceptor implements NestInterceptor {

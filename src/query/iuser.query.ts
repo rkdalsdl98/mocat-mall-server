@@ -11,9 +11,11 @@ export namespace IUserQuery {
     }
 
     export interface IUserQueryUpdateOptions extends IUserQuery.IUserQueryFindOptions {
-        readonly id?: number & tags.Type<"uint32">
-        readonly email?: string & tags.Format<"email">
-        readonly name?: string & tags.MaxLength<10>
+        readonly address?: string & tags.MaxLength<50>
+    }
+
+    export interface IUserQueryCreateOptions extends IUserQuery.IUserQueryFindOptions {
+        readonly password?: string & tags.MinLength<9>
         readonly address?: string & tags.MaxLength<50>
     }
 }

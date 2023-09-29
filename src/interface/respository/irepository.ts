@@ -7,6 +7,7 @@ export interface IRepository<T>{
     getBy(args?: IFindOptions) : Promise<T | null | undefined>
     updateBy(data: IUpdateOptions, args?: IFindOptions) : Promise<void>
     deleteBy(args?: IFindOptions) : Promise<void>
-    create(data: ICreateOptions) : Promise<T>
+    create(data: ICreateOptions, args?: unknown) : Promise<void>
     toEntity(value) : T
+    toRaw(value) : unknown
 }
