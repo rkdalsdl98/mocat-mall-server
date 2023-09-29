@@ -13,4 +13,8 @@ export class UserService {
     async getUsers() : Promise<UserEntity[]> {
         return await this.userRepository.get()
     }
+
+    // async updateUser() : Promise<void> {
+    //     return await this.userRepository.updateBy()
+    // }
 }

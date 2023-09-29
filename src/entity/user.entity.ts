@@ -1,4 +1,5 @@
-import { BasketItemModel } from "src/model/simple_product.model";
+
+import { SimpleProductModel } from "src/model/simple_product.model";
 import { CouponEntity } from "./coupon.entity";
 import { QABoardEntity } from "./qaboard.entity";
 
@@ -11,7 +12,7 @@ export interface UserEntity {
     readonly orders: string[],
     readonly coupons: CouponEntity[],
     readonly qaboards: QABoardEntity[],
-    readonly basket: BasketItemModel[], // 상품 아이디 배열
+    readonly basket: SimpleProductModel[], // 상품 아이디 배열
     readonly createdAt: Date,
     readonly isAdmin: boolean
 }

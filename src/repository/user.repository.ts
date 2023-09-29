@@ -62,11 +62,11 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             return null
         }
     }
-    async updateBy(data: UserUpdateOptions, args?: UserFindOptions): Promise<void> {
+    async updateBy(data: UserUpdateOptions, args: UserFindOptions): Promise<void> {
         await this.user.update({
             where: {
-                id: args?.id,
-                email: args?.email,
+                id: args.id,
+                email: args.email,
             },
             data: {
                 name: data.name,
