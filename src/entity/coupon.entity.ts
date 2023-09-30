@@ -1,6 +1,6 @@
+import { Coupon, CouponCategory } from "src/types/coupon.types"
+
 export interface CouponEntity {
-    readonly salePrice: number
-    readonly validAt: Date
-    readonly couponNumber: string
+    readonly coupon: Coupon<CouponCategory>
     readonly userId: number
 }

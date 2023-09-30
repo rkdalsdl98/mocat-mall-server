@@ -76,9 +76,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             data: {
                 name: data.name,
                 address: data.address,
-                coupons: {
-                    
-                }
             }
         })
         .catch(err => {
@@ -187,7 +184,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                     return {
                         salePrice: item['salePrice'],
                         validAt: item['validAt'],
-                        couponNumber: item['couponNumber'],
+                        coupon: item['couponNumber'],
                         userId: item['userId'],
                     } as CouponEntity
                 }

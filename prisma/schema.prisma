@@ -30,7 +30,7 @@ model coupon {
   salePrice Int @default(0)
   validAt DateTime @default(now())
   couponNumber String @unique
-  user user @relation("Coupons", fields: [userId], references: [id], onDelete: Cascade)
+  user user? @relation("Coupons", fields: [userId], references: [id], onDelete: Cascade)
   userId Int
 }
 

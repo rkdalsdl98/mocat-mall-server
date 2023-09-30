@@ -6,6 +6,7 @@ import { UserUpdateOptions } from "src/repository/user_updateoptions";
 import { UserFindOptions } from "src/repository/user_findoptions";
 import { UserCreateOptions } from "src/repository/user_createoptions";
 import RedisService from "./redis.service";
+import { CouponService } from "./coupon.service";
 
 export class UserService {
     constructor(
@@ -13,6 +14,7 @@ export class UserService {
         private readonly userRepository: UserRepository,
         private readonly mailService: EmailService,
         private readonly redisService: RedisService,
+        private readonly couponSerive: CouponService,
     ){}
 
     async getUsers() : Promise<UserEntity[]> {

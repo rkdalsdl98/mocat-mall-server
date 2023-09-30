@@ -1,0 +1,110 @@
+import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
+import { CouponEntity } from "src/entity/coupon.entity";
+import { IRepository } from "src/interface/respository/irepository";
+import { Coupon } from "src/types/coupon.types";
+import { CouponFindOptions } from "./coupon_findoptions";
+import { CouponCreateOptions } from "./coupon_createoptions";
+
+@Injectable()
+export class CouponRepository extends PrismaClient implements IRepository<CouponEntity>, OnModuleInit, OnModuleDestroy {
+    async onModuleInit() {
+        await this.$connect()
+        .then(_=> Logger.log("Connected database server.", CouponRepository.name))
+        .catch(err => Logger.error(`Failed connected database server.`, err, CouponRepository.name))
+    }
+    
+    async onModuleDestroy() {
+        await this.$disconnect()
+        .then(_ => Logger.log("Disconnected database server.", CouponRepository.name))
+        .catch(err => Logger.error(`Cannot disconnected database server.`, err, CouponRepository.name))
+    }
+    
+    async get(args?: CouponFindOptions): Promise<CouponEntity | CouponEntity[]> {
+        return (await this.coupon.findMany({
+            where: { couponNumber: args?.couponnumber }
+        })
+        .catch(err => { 
+            Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
+            throw err 
+        }))
+        .map(e => {
+            return this.toEntity(e)
+        })
+    }
+
+    async getBy(args: CouponFindOptions): Promise<CouponEntity | null | undefined> {
+        return await this.coupon.findUnique({
+            where: { couponNumber: args.couponnumber }
+        })
+        .then(v => this.toEntity(v))
+        .catch(err => {
+            Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
+            throw err
+        })
+    }
+
+    async deleteBy(args: CouponFindOptions): Promise<void> {
+        await this.coupon.delete({
+            where: { couponNumber: args.couponnumber }
+        }).catch(err => {
+            Logger.error(`쿠폰 정보 삭제 실패`, err.toString(), CouponRepository.name) 
+            throw err
+         })
+    }
+
+    // 등록되어 있는 쿠폰이라면, 보내온 요청 아이디로 유저와 쿠폰 커넥트
+
+    // 등록은 어드민만
+    async create(data: CouponCreateOptions, args?: CouponFindOptions): Promise<void> {
+        await this.coupon.create({
+            data: {
+                salePrice: data.salePrice,
+                validAt: data.validAt,
+                couponNumber: data.couponnumber,
+            }
+        }).catch(err => {
+            Logger.error(`쿠폰 정보 등록 실패`, err.toString(), CouponRepository.name) 
+            throw err
+        })
+    }
+
+    toEntity(v): CouponEntity {
+        const { salePrice, validAt, couponnumber } = v
+        const [ type, number ] = couponnumber.split(":")
+        switch(type) {
+            case "TEST":
+                return {
+                    coupon: {
+                        type,
+                        couponnumber: number,
+                        validAt,
+                        salePrice,
+                    } as Coupon<"TEST">,
+                    userId: v.userId,
+                } as CouponEntity
+            case "EVENT":
+                return {
+                    coupon: {
+                        type,
+                        couponnumber: number,
+                        validAt,
+                        salePrice,
+                    } as Coupon<"EVENT">,
+                    userId: v.userId,
+                } as CouponEntity
+            case "PAYBACK":
+                return {
+                    coupon: {
+                        type,
+                        couponnumber: number,
+                        validAt,
+                        salePrice,
+                    } as Coupon<"PAYBACK">,
+                    userId: v.userId,
+                } as CouponEntity
+            default:
+                throw new Error("유효하지 않은 쿠폰")
+        }
+    }
+}
