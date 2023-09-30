@@ -10,11 +10,14 @@ export class UserController {
     constructor(
         private readonly userService: UserService
     ){}
+    
     // 가드로 토큰을 통해 진행될 거임
+    // 테스트용
     @TypedRoute.Get()
     async getUsers() {
         return this.userService.getUsers()
     }
+
     // 가드로 토큰을 통해 진행될 거임
     @TypedRoute.Get("/:email")
     async getUserBy(

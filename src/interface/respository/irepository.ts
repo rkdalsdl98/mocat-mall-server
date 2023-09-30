@@ -9,5 +9,4 @@ export interface IRepository<T>{
     deleteBy(args?: IFindOptions) : Promise<void>
     create(data: ICreateOptions, args?: unknown) : Promise<void>
     toEntity(value) : T
-    toRaw(value) : unknown
 }

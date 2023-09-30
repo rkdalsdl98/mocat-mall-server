@@ -9,6 +9,8 @@ import { UserUpdateOptions } from "./user_updateoptions";
 import { IRepository } from "src/interface/respository/irepository";
 import { UserCreateOptions } from "./user_createoptions";
 import { ReplyEntity } from "src/entity/reply.entity";
+import { OrderEntity } from "src/entity/order.entity";
+import { DeliveryEntity } from "src/entity/delivery.entity";
 
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
     async onModuleInit() {
@@ -28,6 +30,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             include: {
                 qaboards: true,
                 coupons: true,
+                orders: true,
             },
             where: {
                 id: args?.id,
@@ -47,6 +50,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             include: {
                 qaboards: true,
                 coupons: true,
+                orders: true,
             },
             where: {
                 id: args.id,
@@ -72,6 +76,9 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             data: {
                 name: data.name,
                 address: data.address,
+                coupons: {
+                    
+                }
             }
         })
         .catch(err => {
@@ -109,30 +116,42 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
     }
 
     // 필터 타입으로 교체
-    toRaw(v: UserEntity) : unknown {
-        return {
-            id: v.id,
-            email: v.email,
-            password: v.password,
-            salt: v.salt,
-            orders: v.orders,
-            qaboards: {...v.qaboards},
-            coupons: {...v.coupons},
-            address: v.address,
-            basket: {...v.basket},
-            createdAt: v.createdAt,
-            isAdmin: v.isAdmin,
-        }
-    }
-
-    // 필터 타입으로 교체
     toEntity(v) : UserEntity{
         return {
             id: v.id,
             email: v.email,
             password: v.password,
             salt: v.salt,
-            orders: v.orders,
+            orders: [...Object.keys(v.orders)].map(key => {
+                var item = v.orders[key]
+                if(item) {
+                    return {
+                        orderId: item['orderId'],
+                        paymentKey: item['paymentKey'],
+                        delivery: {
+                            id: item['delivery']['id'],
+                            orderId: item['delivery']['orderId'],
+                            address: item['delivery']['address'],
+                            detailAddress: item['delivery']['detailAddress'],
+                            memo: item['delivery']['memo'],
+                            state: item['delivery']['state'],
+                            products: [...Object.keys(item['delivery']['products'])].map(key => {
+                                var product = item['delivery']['products'][key]
+                                if(product) {
+                                    return {
+                                        productId: product['productId'],
+                                        productName: product['productName'],
+                                        thumbnail: product['thumbnail'],
+                                        counts: product['counts'],
+                                        price: product['price'],
+                                    } as SimpleProductModel
+                                }
+                            })
+                        } as DeliveryEntity,
+                        userId: item['userId'],
+                    } as OrderEntity
+                }
+            }),
             qaboards: [...Object.keys(v.qaboards)].map(key => {
                 var item = v.qaboards[key]
                 if(item) {
@@ -145,7 +164,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                         writerEmail: item['writerEmail'],
                         writerName: item['writerName'],
                         reply: [...Object.keys(item['reply'])].map(key => {
-                            var item = v.qaboards[key]
+                            var item = item['reply'][key]
                             if(item) {
                                 return {
                                     id: item['id'],

@@ -18,7 +18,7 @@ model user {
   salt String
   name String
   address String
-  orders String[]
+  orders order[] @relation("Orders")
   coupons coupon[] @relation("Coupons")
   qaboards qaboard[] @relation("QABoard")
   baskets Json[] // 상품의 아이디와 간단한 정보를 담은 객체를 Json 형태로 저장
@@ -83,6 +83,8 @@ model order {
   orderId String @unique
   paymentKey String
   delivery delivery? @relation("Delivery")
+  user user? @relation("Orders", fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
 }
 
 model delivery {
