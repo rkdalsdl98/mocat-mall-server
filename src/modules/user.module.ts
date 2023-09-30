@@ -5,9 +5,11 @@ import { CouponService } from 'src/services/coupon.service';
 import { EmailService } from 'src/services/mailer.service';
 import RedisService from 'src/services/redis.service';
 import { UserService } from 'src/services/user.service';
+import { CouponModule } from './coupon.module';
+import { CouponRepository } from 'src/repository/coupon/coupon.repository';
 
 @Module({
-    imports: [],
+    imports: [CouponModule],
     controllers: [UserController],
     providers: [
         EmailService,
@@ -18,6 +20,10 @@ import { UserService } from 'src/services/user.service';
             provide: "UserRepository",
             useClass: UserRepository,
         },
+        {
+            provide: "CouponRepository",
+            useClass: CouponRepository,
+        }
     ]
 })
 export class UserModule {}

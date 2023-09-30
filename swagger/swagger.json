@@ -14,8 +14,1059 @@
       "name": "UNLICENSED"
     }
   },
-  "paths": {},
+  "paths": {
+    "/coupon": {
+      "get": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ICouponQuery"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CouponEntity"
+                      }
+                    },
+                    {
+                      "$ref": "#/components/schemas/CouponEntity"
+                    }
+                  ]
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "coupon.getCoupons",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "GET"
+      }
+    },
+    "/coupon/{couponnumber}": {
+      "get": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ICouponQuery"
+            },
+            "description": "",
+            "required": true
+          },
+          {
+            "name": "couponnumber",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CouponEntity.Nullable"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "쿼리 파라미터로 받아오는 쿠폰 번호는 파싱이전 정보\ntype:couponnumber",
+        "x-nestia-namespace": "coupon.getCoupon",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "GET"
+      },
+      "delete": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "couponnumber",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "coupon.deleteCoupon",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "DELETE"
+      }
+    },
+    "/coupon/create": {
+      "post": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ICouponQuery.ICouponQueryCreateOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "coupon.create.createCoupon",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "POST"
+      }
+    },
+    "/user": {
+      "get": {
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserEntity"
+                  }
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.getUsers",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "GET"
+      },
+      "post": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IUserQuery.IUserQueryCreateOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.createUser",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "POST"
+      },
+      "patch": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IUserQuery.IUserQueryUpdateOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.updateUser",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "PATCH"
+      }
+    },
+    "/user/{email}": {
+      "get": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "format": "email",
+              "x-typia-typeTags": [
+                {
+                  "target": "string",
+                  "name": "Format<\"email\">",
+                  "kind": "format",
+                  "value": "email",
+                  "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                  "exclusive": [
+                    "pattern"
+                  ]
+                }
+              ]
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserEntity.Nullable"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.getUserBy",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "GET"
+      },
+      "delete": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "schema": {
+              "type": "string",
+              "format": "email",
+              "x-typia-typeTags": [
+                {
+                  "target": "string",
+                  "name": "Format<\"email\">",
+                  "kind": "format",
+                  "value": "email",
+                  "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                  "exclusive": [
+                    "pattern"
+                  ]
+                }
+              ]
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.deleteUser",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "DELETE"
+      }
+    }
+  },
   "components": {
-    "schemas": {}
+    "schemas": {
+      "ICouponQuery": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "email",
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "name": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "CouponEntity": {
+        "type": "object",
+        "properties": {
+          "coupon": {
+            "$ref": "#/components/schemas/Coupon_lt_CouponCategory_gt_"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "coupon"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Coupon_lt_CouponCategory_gt_": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/CouponCategory"
+          },
+          "couponnumber": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "validAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "salePrice": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "couponnumber",
+          "validAt",
+          "salePrice"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CouponCategory": {
+        "type": "string",
+        "enum": [
+          "TEST",
+          "EVENT",
+          "PAYBACK"
+        ]
+      },
+      "CouponEntity.Nullable": {
+        "type": "object",
+        "properties": {
+          "coupon": {
+            "$ref": "#/components/schemas/Coupon_lt_CouponCategory_gt_"
+          }
+        },
+        "nullable": true,
+        "required": [
+          "coupon"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ICouponQuery.ICouponQueryCreateOptions": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
+                "exclusive": true
+              }
+            ]
+          },
+          "salePrice": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"int32\">",
+                "kind": "type",
+                "value": "int32",
+                "validate": "Math.floor($input) === $input && -2147483648 <= $input && $input <= 2147483647",
+                "exclusive": true
+              }
+            ]
+          },
+          "email": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "email",
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "name": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "address": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "salt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "orders": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderEntity"
+            }
+          },
+          "coupons": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CouponEntity"
+            }
+          },
+          "qaboards": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QABoardEntity"
+            }
+          },
+          "basket": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimpleProductModel"
+            }
+          },
+          "createdAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "isAdmin": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "email",
+          "password",
+          "address",
+          "salt",
+          "orders",
+          "coupons",
+          "qaboards",
+          "basket",
+          "createdAt",
+          "isAdmin"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "OrderEntity": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "paymentKey": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "delivery": {
+            "$ref": "#/components/schemas/DeliveryEntity"
+          },
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "orderId",
+          "paymentKey",
+          "delivery",
+          "userId"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "DeliveryEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "orderId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "address": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "detailAddress": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "memo": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "state": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "products": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimpleProductModel"
+            }
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "orderId",
+          "address",
+          "detailAddress",
+          "memo",
+          "state",
+          "products"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "SimpleProductModel": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "productName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "thumbnail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "counts": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "price": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "productId",
+          "productName",
+          "thumbnail",
+          "counts",
+          "price"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "QABoardEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "title": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "contentText": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number"
+          },
+          "visited": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "writerEmail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "reply": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplyEntity"
+            }
+          },
+          "userId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "createdAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "title",
+          "contentText",
+          "visited",
+          "writerEmail",
+          "writerName",
+          "reply",
+          "userId",
+          "createdAt",
+          "updatedAt"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ReplyEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "contentText": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerEmail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "boardId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "id",
+          "contentText",
+          "writerEmail",
+          "writerName",
+          "boardId"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "UserEntity.Nullable": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "email": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "password": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "address": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "salt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "orders": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderEntity"
+            }
+          },
+          "coupons": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CouponEntity"
+            }
+          },
+          "qaboards": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QABoardEntity"
+            }
+          },
+          "basket": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SimpleProductModel"
+            }
+          },
+          "createdAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "isAdmin": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "boolean"
+          }
+        },
+        "nullable": true,
+        "required": [
+          "id",
+          "email",
+          "password",
+          "address",
+          "salt",
+          "orders",
+          "coupons",
+          "qaboards",
+          "basket",
+          "createdAt",
+          "isAdmin"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IUserQuery.IUserQueryCreateOptions": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "minLength": 9,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MinLength<9>",
+                "kind": "minLength",
+                "value": 9,
+                "validate": "9 <= $input.length",
+                "exclusive": true
+              }
+            ]
+          },
+          "address": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 50,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<50>",
+                "kind": "maxLength",
+                "value": 50,
+                "validate": "$input.length <= 50",
+                "exclusive": true
+              }
+            ]
+          },
+          "id": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          },
+          "email": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "email",
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "name": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "IUserQuery.IUserQueryUpdateOptions": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 50,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<50>",
+                "kind": "maxLength",
+                "value": 50,
+                "validate": "$input.length <= 50",
+                "exclusive": true
+              }
+            ]
+          },
+          "id": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          },
+          "email": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "email",
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "name": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      }
+    }
   }
 }

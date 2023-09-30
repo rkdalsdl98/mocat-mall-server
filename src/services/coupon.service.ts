@@ -5,6 +5,9 @@ import { v4 } from "uuid"
 import RedisService from "./redis.service";
 import { CouponRepository } from "src/repository/coupon/coupon.repository";
 import { CouponEntity } from "src/entity/coupon.entity";
+import { CouponFindOptions } from "src/repository/coupon/coupon_findoptions";
+import { CouponUpdateOptions } from "src/repository/coupon/coupon_updateoptiosn";
+import { CouponCreateOptions } from "src/repository/coupon/coupon_createoptions";
 
 dotenv.config()
 
@@ -18,6 +21,19 @@ export class CouponService {
 
     async getCoupons() : Promise<CouponEntity[] | CouponEntity | undefined> {
         return await this.couponRepository.get()
+    }
+
+    async getCouponBy(args: CouponFindOptions) : Promise<CouponEntity | null | undefined> {
+        return await this.couponRepository.getBy(args)
+    }
+
+    async deleteCoupon(args: CouponFindOptions) : Promise<void> {
+        return await this.couponRepository.deleteBy(args)
+    }
+    
+    async createCoupon(data: CouponCreateOptions) : Promise<void> {
+        const coupon = this.generateCouponCode(data.type as CouponCategory, data.salePrice)
+        await this.couponRepository.create(coupon)
     }
 
     generateCouponCode(

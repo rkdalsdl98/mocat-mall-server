@@ -1,10 +1,12 @@
 import { tags } from "typia"
 
 export interface ICouponQuery {
-    readonly coupon: string & tags.MaxLength<44> // "쿠폰식별자<10>:쿠폰번호<32> 여유 2"
+    readonly email?: string & tags.Format<"email">
+    readonly name?: string & tags.MaxLength<10>
 }
 export namespace ICouponQuery {
-    export interface ICouponQueryUpdateOptions extends ICouponQuery {
+    export interface ICouponQueryCreateOptions extends ICouponQuery {
+        readonly type: string & tags.MaxLength<10>
         readonly salePrice?: number & tags.Type<"int32">
     }
 }

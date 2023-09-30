@@ -29,7 +29,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         return (await this.user.findMany({
             include: {
                 qaboards: true,
-                coupons: true,
                 orders: true,
             },
             where: {
@@ -49,7 +48,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         const user = await this.user.findUnique({
             include: {
                 qaboards: true,
-                coupons: true,
                 orders: true,
             },
             where: {

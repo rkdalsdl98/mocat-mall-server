@@ -5,6 +5,7 @@ import { IRepository } from "src/interface/respository/irepository";
 import { Coupon } from "src/types/coupon.types";
 import { CouponFindOptions } from "./coupon_findoptions";
 import { CouponCreateOptions } from "./coupon_createoptions";
+import { CouponUpdateOptions } from "./coupon_updateoptiosn";
 
 @Injectable()
 export class CouponRepository extends PrismaClient implements IRepository<CouponEntity>, OnModuleInit, OnModuleDestroy {
@@ -22,7 +23,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
     
     async get(args?: CouponFindOptions): Promise<CouponEntity | CouponEntity[]> {
         return (await this.coupon.findMany({
-            where: { couponNumber: args?.couponnumber }
+            where: { couponNumber: args?.couponnumber },
         })
         .catch(err => { 
             Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
@@ -37,12 +38,28 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         return await this.coupon.findUnique({
             where: { couponNumber: args.couponnumber }
         })
-        .then(v => this.toEntity(v))
+        .then(v => {
+            if(v) return this.toEntity(v)
+            return v
+        })
         .catch(err => {
             Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
             throw err
         })
     }
+
+    // 보류
+    async updateBy(data: CouponUpdateOptions, args: CouponFindOptions): Promise<void> {
+        await this.coupon.update({
+            data: {},
+            where: {couponNumber: args.couponnumber}
+        })
+        .catch(err => {
+            Logger.error(`유저 쿠폰 등록 실패`, err.toString(), CouponRepository.name) 
+            throw err
+        })
+    }
+
 
     async deleteBy(args: CouponFindOptions): Promise<void> {
         await this.coupon.delete({
@@ -53,15 +70,13 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
          })
     }
 
-    // 등록되어 있는 쿠폰이라면, 보내온 요청 아이디로 유저와 쿠폰 커넥트
-
     // 등록은 어드민만
     async create(data: CouponCreateOptions, args?: CouponFindOptions): Promise<void> {
-        await this.coupon.create({
+        const coupon = await this.coupon.create({
             data: {
                 salePrice: data.salePrice,
                 validAt: data.validAt,
-                couponNumber: data.couponnumber,
+                couponNumber: `${data.type}:${data.couponnumber}`,
             }
         }).catch(err => {
             Logger.error(`쿠폰 정보 등록 실패`, err.toString(), CouponRepository.name) 
@@ -70,8 +85,8 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
     }
 
     toEntity(v): CouponEntity {
-        const { salePrice, validAt, couponnumber } = v
-        const [ type, number ] = couponnumber.split(":")
+        const { salePrice, validAt, couponNumber } = v
+        const [ type, number ] = couponNumber.split(":")
         switch(type) {
             case "TEST":
                 return {

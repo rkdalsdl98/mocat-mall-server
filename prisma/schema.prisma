@@ -19,7 +19,7 @@ model user {
   name String
   address String
   orders order[] @relation("Orders")
-  coupons coupon[] @relation("Coupons")
+  coupons String[]
   qaboards qaboard[] @relation("QABoard")
   baskets Json[] // 상품의 아이디와 간단한 정보를 담은 객체를 Json 형태로 저장
   createdAt DateTime @default(now())
@@ -30,8 +30,6 @@ model coupon {
   salePrice Int @default(0)
   validAt DateTime @default(now())
   couponNumber String @unique
-  user user? @relation("Coupons", fields: [userId], references: [id], onDelete: Cascade)
-  userId Int
 }
 
 model qaboard {
