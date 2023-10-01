@@ -1,4 +1,4 @@
-import { OnModuleDestroy, OnModuleInit, Logger } from "@nestjs/common";
+import { OnModuleDestroy, OnModuleInit, Logger, Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { QABoardEntity } from "src/entity/qaboard.entity";
 import { UserEntity } from "src/entity/user.entity";
@@ -11,6 +11,7 @@ import { ReplyEntity } from "src/entity/reply.entity";
 import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 
+@Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
     async onModuleInit() {
         await this.$connect()
