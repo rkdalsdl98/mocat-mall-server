@@ -1,8 +1,9 @@
 import { TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 import { Controller } from "@nestjs/common";
-import { CouponEntity } from "src/entity/coupon.entity";
+import { CouponDto } from "src/dto/coupon.dto";
 import { ICouponQuery } from "src/query/icoupon.query";
 import { CouponService } from "src/services/coupon.service";
+import { CouponCategory } from "src/types/coupon.types";
 
 @Controller("coupon")
 export class CouponController {
@@ -13,7 +14,7 @@ export class CouponController {
     @TypedRoute.Get()
     async getCoupons(
         @TypedQuery() query : ICouponQuery
-    ) : Promise<CouponEntity[] | CouponEntity | undefined> {
+    ) : Promise<CouponDto[] | undefined> {
         return await this.couponService.getCoupons()
     }
 
@@ -25,7 +26,7 @@ export class CouponController {
     async getCoupon(
         @TypedQuery() query : ICouponQuery,
         @TypedParam("couponnumber") couponnumber: string
-    ) : Promise<CouponEntity | null | undefined> {
+    ) : Promise<CouponDto | null | undefined> {
         return await this.couponService.getCouponBy({couponnumber})
     }
 
@@ -34,7 +35,7 @@ export class CouponController {
         @TypedQuery() query : ICouponQuery.ICouponQueryCreateOptions
     ) : Promise<void> {
         return await this.couponService.createCoupon({
-            type: query.type,
+            type: query.type as CouponCategory,
             salePrice: query.salePrice ?? 1_000,
         })
     }

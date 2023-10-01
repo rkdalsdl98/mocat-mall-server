@@ -21,7 +21,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         .catch(err => Logger.error(`Cannot disconnected database server.`, err, CouponRepository.name))
     }
     
-    async get(args?: CouponFindOptions): Promise<CouponEntity | CouponEntity[]> {
+    async get(args?: CouponFindOptions): Promise<CouponEntity[]> {
         return (await this.coupon.findMany({
             where: { couponNumber: args?.couponnumber },
         })
@@ -71,8 +71,8 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
     }
 
     // 등록은 어드민만
-    async create(data: CouponCreateOptions, args?: CouponFindOptions): Promise<void> {
-        const coupon = await this.coupon.create({
+    async create(data: CouponCreateOptions, args?: CouponFindOptions): Promise<CouponEntity> {
+        return this.toEntity(await this.coupon.create({
             data: {
                 salePrice: data.salePrice,
                 validAt: data.validAt,
@@ -81,12 +81,13 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         }).catch(err => {
             Logger.error(`쿠폰 정보 등록 실패`, err.toString(), CouponRepository.name) 
             throw err
-        })
+        }))
     }
 
     toEntity(v): CouponEntity {
         const { salePrice, validAt, couponNumber } = v
         const [ type, number ] = couponNumber.split(":")
+
         switch(type) {
             case "TEST":
                 return {

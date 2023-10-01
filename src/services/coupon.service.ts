@@ -6,6 +6,8 @@ import { CouponRepository } from "src/repository/coupon/coupon.repository";
 import { CouponEntity } from "src/entity/coupon.entity";
 import { CouponFindOptions } from "src/repository/coupon/coupon_findoptions";
 import { CouponCreateOptions } from "src/repository/coupon/coupon_createoptions";
+import RedisService from "./redis.service";
+import { CouponDto } from "src/dto/coupon.dto";
 
 dotenv.config()
 
@@ -14,23 +16,84 @@ export class CouponService {
     constructor(
         @Inject("CouponRepository")
         private readonly couponRepository: CouponRepository,
+        private readonly redisService: RedisService,
     ){}
 
-    async getCoupons() : Promise<CouponEntity[] | CouponEntity | undefined> {
-        return await this.couponRepository.get()
+    async getCoupons() : Promise<CouponDto[] | undefined> {
+        const caches = await this.redisService.get<CouponEntity[]>("coupons", CouponService.name)
+        if(caches) {
+            const dto = caches.map(c => {
+                return {
+                    salePrice: c.coupon.salePrice,
+                    validAt: new Date(c.coupon.validAt),
+                    couponNumber: `${c.coupon.type}:${c.coupon.couponnumber}`
+                } as CouponDto
+            })
+            return dto
+        }
+        const coupons = await this.couponRepository.get()
+        if(coupons) {
+            const dto = coupons.map(c => {
+                return {
+                    salePrice: c.coupon.salePrice,
+                    validAt: new Date(c.coupon.validAt),
+                    couponNumber: `${c.coupon.type}:${c.coupon.couponnumber}`
+                } as CouponDto
+            })
+            return dto
+        }
+        return undefined
     }
 
-    async getCouponBy(args: CouponFindOptions) : Promise<CouponEntity | null | undefined> {
-        return await this.couponRepository.getBy(args)
+    async getCouponBy(args: CouponFindOptions) : Promise<CouponDto | null | undefined> {
+        const caches = await this.redisService.get<CouponEntity[]>("coupons", CouponService.name)
+        if(caches) {
+            const cache = caches.find(c => `${c.coupon.type}:${c.coupon.couponnumber}` === args.couponnumber)
+            if(cache) return {
+                salePrice: cache.coupon.salePrice,
+                validAt: new Date(cache.coupon.validAt),
+                couponNumber: `${cache.coupon.type}:${cache.coupon.couponnumber}`
+            } as CouponDto
+
+        const coupon = await this.couponRepository.getBy(args)
+        if(coupon) {
+                const dto = {
+                    salePrice: coupon.coupon.salePrice,
+                    validAt: new Date(coupon.coupon.validAt),
+                    couponNumber: `${coupon.coupon.type}:${coupon.coupon.couponnumber}`
+                } as CouponDto
+                return dto
+            }
+        }
+        return undefined
     }
 
     async deleteCoupon(args: CouponFindOptions) : Promise<void> {
+        let caches = await this.redisService.get<CouponEntity[]>("coupons", CouponService.name)
+        if(caches) {
+            caches = caches.filter(c => `${c.coupon.type}:${c.coupon.couponnumber}` !== args.couponnumber)
+            await this.redisService.set("copons", caches, CouponService.name)
+        }
         return await this.couponRepository.deleteBy(args)
     }
     
     async createCoupon(data: CouponCreateOptions) : Promise<void> {
-        const coupon = this.generateCouponCode(data.type as CouponCategory, data.salePrice)
-        await this.couponRepository.create(coupon)
+        let coupon : Coupon<CouponCategory> = this.generateCouponCode(data.type as CouponCategory, data.salePrice)
+        let caches = await this.redisService.get<CouponEntity[]>("coupons", CouponService.name)
+
+        if(caches) {
+            let isDuplicate = true
+            while(isDuplicate) {
+                const isAlready = caches.find(c => `${c.coupon.type}:${c.coupon.couponnumber}` === `${coupon.type}:${coupon.couponnumber}`)
+                if(isAlready) {
+                    coupon = this.generateCouponCode(data.type as CouponCategory, data.salePrice)
+                    continue
+                } else break
+            }
+        } else caches = [] as CouponEntity[]
+
+        const entity = await this.couponRepository.create(coupon)
+        await this.redisService.set("coupons", [...caches, entity], CouponService.name)
     }
 
     generateCouponCode(

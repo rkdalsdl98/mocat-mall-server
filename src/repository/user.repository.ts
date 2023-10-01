@@ -44,6 +44,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             return this.toEntity(e)
         })
     }
+
     async getBy(args: UserFindOptions): Promise<UserEntity | null | undefined> {
         const user = await this.user.findUnique({
             include: {
@@ -65,8 +66,9 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             return null
         }
     }
-    async updateBy(data: UserUpdateOptions, args: UserFindOptions): Promise<void> {
-        await this.user.update({
+
+    async updateBy(data: UserUpdateOptions, args: UserFindOptions): Promise<UserEntity> {
+        return this.toEntity(await this.user.update({
             where: {
                 id: args.id,
                 email: args.email,
@@ -79,8 +81,9 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         .catch(err => {
             Logger.error(`유저 정보 업데이트 실패`, err.toString(), UserRepository.name)  
             throw err
-         })
+         }))
     }
+
     async deleteBy(args: UserFindOptions): Promise<void> {
         await this.user.delete({
             where: {
@@ -94,8 +97,8 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
          })
     }
     
-    async create(data: UserCreateOptions, salt: string): Promise<void> {
-        await this.user.create({
+    async create(data: UserCreateOptions, salt: string): Promise<UserEntity> {
+       return this.toEntity(await this.user.create({
             data: {
                 email: data.email!,
                 password: data.password!,
@@ -107,7 +110,20 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         .catch(err => {
             Logger.error(`유저 정보 등록 실패`, err.toString(), UserRepository.name) 
             throw err
+        }))
+    }
+
+    async connectCoupon(coupon : string, args: UserFindOptions) : Promise<UserEntity> {
+        return this.toEntity(await this.user.update({
+            where: { email: args.email },
+            data: {
+                coupons: { push: coupon }
+            }
         })
+        .catch(err => {
+            Logger.error(`쿠폰 등록 실패`, err.toString(), UserRepository.name) 
+            throw err
+        }))
     }
 
     // 필터 타입으로 교체

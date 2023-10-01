@@ -102,6 +102,15 @@
         "tags": [],
         "parameters": [
           {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/ICouponQuery"
+            },
+            "description": "",
+            "required": true
+          },
+          {
             "name": "couponnumber",
             "in": "path",
             "schema": {
