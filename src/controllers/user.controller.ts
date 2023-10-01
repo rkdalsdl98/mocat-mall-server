@@ -40,7 +40,7 @@ export class UserController {
         })
     }
 
-    @TypedRoute.Post("coupon/connect")
+    @TypedRoute.Patch("coupon/connect")
     async connectCoupon(
         @TypedQuery() query : IUserQuery.IUserQueryConnectCouponOptions
     ) : Promise<unknown> {
