@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleDestroy, OnModuleInit } from "@nestjs/commo
 import { PrismaClient } from "@prisma/client";
 import { CouponEntity } from "src/entity/coupon.entity";
 import { IRepository } from "src/interface/respository/irepository";
-import { Coupon } from "src/types/coupon.types";
+import { Coupon, CouponCategory } from "src/types/coupon.types";
 import { CouponFindOptions } from "./coupon_findoptions";
 import { CouponCreateOptions } from "./coupon_createoptions";
 import { CouponUpdateOptions } from "./coupon_updateoptiosn";
@@ -76,7 +76,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
             data: {
                 salePrice: data.salePrice,
                 validAt: data.validAt,
-                couponNumber: `${data.type}:${data.couponnumber}`,
+                couponNumber: `${data.type as CouponCategory}:${data.couponnumber}`,
             }
         }).catch(err => {
             Logger.error(`쿠폰 정보 등록 실패`, err.toString(), CouponRepository.name) 

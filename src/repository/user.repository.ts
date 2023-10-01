@@ -1,6 +1,5 @@
 import { OnModuleDestroy, OnModuleInit, Logger } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CouponEntity } from "src/entity/coupon.entity";
 import { QABoardEntity } from "src/entity/qaboard.entity";
 import { UserEntity } from "src/entity/user.entity";
 import { SimpleProductModel } from "src/model/simple_product.model";
@@ -76,6 +75,10 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             data: {
                 name: data.name,
                 address: data.address,
+            },
+            include: {
+                qaboards: true,
+                orders: true,
             }
         })
         .catch(err => {
@@ -98,19 +101,24 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
     }
     
     async create(data: UserCreateOptions, salt: string): Promise<UserEntity> {
-       return this.toEntity(await this.user.create({
+        const user = await this.user.create({
             data: {
                 email: data.email!,
                 password: data.password!,
                 address: data.address!,
                 salt: salt,
                 name: data.name!,
+            },
+            include: {
+                qaboards: true,
+                orders: true,
             }
         })
         .catch(err => {
             Logger.error(`유저 정보 등록 실패`, err.toString(), UserRepository.name) 
             throw err
-        }))
+        })
+        return this.toEntity(user)
     }
 
     async connectCoupon(coupon : string, args: UserFindOptions) : Promise<UserEntity> {
@@ -118,6 +126,10 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             where: { email: args.email },
             data: {
                 coupons: { push: coupon }
+            },
+            include: {
+                qaboards: true,
+                orders: true,
             }
         })
         .catch(err => {
@@ -192,17 +204,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                     } as QABoardEntity
                 }
             }),
-            coupons: [...Object.keys(v.coupons)].map(key => {
-                var item = v.qaboards[key]
-                if(item) {
-                    return {
-                        salePrice: item['salePrice'],
-                        validAt: item['validAt'],
-                        coupon: item['couponNumber'],
-                        userId: item['userId'],
-                    } as CouponEntity
-                }
-            }),
+            coupons: v.coupons,
             address: v.address,
             basket: [...Object.keys(v.baskets)].map(key => {
                 var item = v.baskets[key]

@@ -1,6 +1,7 @@
 import { TypedRoute, TypedQuery, TypedParam } from "@nestia/core";
 import { Controller, UseInterceptors } from "@nestjs/common";
 import { MappingInterceptor } from "src/common/interceptors/mapping.interceptor";
+import { UserEntity } from "src/entity/user.entity";
 import { IUserQuery } from "src/query/iuser.query";
 import { UserService } from "src/services/user.service";
 import { tags } from "typia"
@@ -14,7 +15,7 @@ export class UserController {
     // 가드로 토큰을 통해 진행될 거임
     // 테스트용
     @TypedRoute.Get()
-    async getUsers() {
+    async getUsers() : Promise<UserEntity[] | undefined> {
         return this.userService.getUsers()
     }
 
@@ -22,7 +23,7 @@ export class UserController {
     @TypedRoute.Get("/:email")
     async getUserBy(
         @TypedParam("email") email: string & tags.Format<"email">
-    ) {
+    ) : Promise<UserEntity | null | undefined> {
         return this.userService.getUserBy({email})
     }
 
@@ -39,6 +40,13 @@ export class UserController {
         })
     }
 
+    @TypedRoute.Post("coupon/connect")
+    async connectCoupon(
+        @TypedQuery() query : IUserQuery.IUserQueryConnectCouponOptions
+    ) : Promise<unknown> {
+        return this.userService.connectCoupon(query.coupon, { email: query.email })
+    }
+
     // 가드로 토큰을 확인 하고 진행될 거임
     @TypedRoute.Patch()
     async updateUser(
@@ -47,10 +55,7 @@ export class UserController {
         return await this.userService.updateUser({
             name: query.name,
             address: query.address,
-        },{
-            id: query.id,
-            email: query.email,
-        })
+        },{ email: query.email })
     }
 
     // 가드로 토큰을 통해 진행될 거임

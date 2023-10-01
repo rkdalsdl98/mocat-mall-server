@@ -35,8 +35,9 @@ export class UserService {
     async createUser(data: UserCreateOptions) : Promise<void> {
         // 패스워드 암호화 루틴
         let caches = await this.redisService.get<UserEntity[]>("users", UserService.name)
-        const user = await this.userRepository.create(data, "test")
         if(!caches) caches = [] as UserEntity[]
+
+        const user = await this.userRepository.create(data, "test")
         await this.redisService.set("users", [...caches, user], UserService.name)
     }
 
@@ -62,9 +63,13 @@ export class UserService {
     async connectCoupon(coupon: string, args: UserFindOptions) : Promise<unknown> {
         const isExisting = await this.couponSerive.getCouponBy({couponnumber: coupon})
         if(isExisting) {
+            let caches = await this.redisService.get<UserEntity[]>("users", UserService.name)
+            if(caches) {
+                const user = caches.find(u => u.email === args.email)
+                if(user && user.coupons.includes(coupon)) return false
+            }
             await this.userRepository.connectCoupon(coupon, args)
             .then(async user => {
-                let caches = await this.redisService.get<UserEntity[]>("users", UserService.name)
                 if(caches) {
                     caches = caches.filter(u => u.email !== args.email)
                     caches.push(user)

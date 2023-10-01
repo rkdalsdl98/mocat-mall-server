@@ -35,17 +35,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "oneOf": [
-                    {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/CouponEntity"
-                      }
-                    },
-                    {
-                      "$ref": "#/components/schemas/CouponEntity"
-                    }
-                  ]
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CouponDto"
+                  }
                 }
               }
             },
@@ -86,7 +79,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CouponEntity.Nullable"
+                  "$ref": "#/components/schemas/CouponDto.Nullable"
                 }
               }
             },
@@ -312,6 +305,36 @@
         "x-nestia-jsDocTags": [],
         "x-nestia-method": "DELETE"
       }
+    },
+    "/user/coupon/connect": {
+      "post": {
+        "tags": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IUserQuery.IUserQueryConnectCouponOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "x-nestia-namespace": "user.coupon.connect.connectCoupon",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "POST"
+      }
     }
   },
   "components": {
@@ -357,29 +380,13 @@
         "nullable": false,
         "x-typia-jsDocTags": []
       },
-      "CouponEntity": {
+      "CouponDto": {
         "type": "object",
         "properties": {
-          "coupon": {
-            "$ref": "#/components/schemas/Coupon_lt_CouponCategory_gt_"
-          }
-        },
-        "nullable": false,
-        "required": [
-          "coupon"
-        ],
-        "x-typia-jsDocTags": []
-      },
-      "Coupon_lt_CouponCategory_gt_": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/CouponCategory"
-          },
-          "couponnumber": {
+          "salePrice": {
             "x-typia-required": true,
             "x-typia-optional": false,
-            "type": "string"
+            "type": "number"
           },
           "validAt": {
             "x-typia-required": true,
@@ -387,39 +394,45 @@
             "type": "string",
             "format": "date-time"
           },
-          "salePrice": {
+          "couponNumber": {
             "x-typia-required": true,
             "x-typia-optional": false,
-            "type": "number"
+            "type": "string"
           }
         },
         "nullable": false,
         "required": [
-          "type",
-          "couponnumber",
+          "salePrice",
           "validAt",
-          "salePrice"
+          "couponNumber"
         ],
         "x-typia-jsDocTags": []
       },
-      "CouponCategory": {
-        "type": "string",
-        "enum": [
-          "TEST",
-          "EVENT",
-          "PAYBACK"
-        ]
-      },
-      "CouponEntity.Nullable": {
+      "CouponDto.Nullable": {
         "type": "object",
         "properties": {
-          "coupon": {
-            "$ref": "#/components/schemas/Coupon_lt_CouponCategory_gt_"
+          "salePrice": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "validAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "couponNumber": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
           }
         },
         "nullable": true,
         "required": [
-          "coupon"
+          "salePrice",
+          "validAt",
+          "couponNumber"
         ],
         "x-typia-jsDocTags": []
       },
@@ -710,6 +723,59 @@
         ],
         "x-typia-jsDocTags": []
       },
+      "CouponEntity": {
+        "type": "object",
+        "properties": {
+          "coupon": {
+            "$ref": "#/components/schemas/Coupon_lt_CouponCategory_gt_"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "coupon"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "Coupon_lt_CouponCategory_gt_": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/CouponCategory"
+          },
+          "couponnumber": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "validAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "salePrice": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "type",
+          "couponnumber",
+          "validAt",
+          "salePrice"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "CouponCategory": {
+        "type": "string",
+        "enum": [
+          "TEST",
+          "EVENT",
+          "PAYBACK"
+        ]
+      },
       "QABoardEntity": {
         "type": "object",
         "properties": {
@@ -951,17 +1017,68 @@
               }
             ]
           },
-          "id": {
+          "email": {
             "x-typia-required": false,
             "x-typia-optional": true,
-            "type": "integer",
+            "type": "string",
+            "format": "email",
             "x-typia-typeTags": [
               {
-                "target": "number",
-                "name": "Type<\"uint32\">",
-                "kind": "type",
-                "value": "uint32",
-                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "name": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "IUserQuery.IUserQueryConnectCouponOptions": {
+        "type": "object",
+        "properties": {
+          "coupon": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 39,
+            "minLength": 37,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MinLength<37>",
+                "kind": "minLength",
+                "value": 37,
+                "validate": "37 <= $input.length",
+                "exclusive": true
+              },
+              {
+                "target": "string",
+                "name": "MaxLength<39>",
+                "kind": "maxLength",
+                "value": 39,
+                "validate": "$input.length <= 39",
                 "exclusive": true
               }
             ]
@@ -1002,6 +1119,9 @@
           }
         },
         "nullable": false,
+        "required": [
+          "coupon"
+        ],
         "x-typia-jsDocTags": []
       },
       "IUserQuery.IUserQueryUpdateOptions": {
@@ -1019,21 +1139,6 @@
                 "kind": "maxLength",
                 "value": 50,
                 "validate": "$input.length <= 50",
-                "exclusive": true
-              }
-            ]
-          },
-          "id": {
-            "x-typia-required": false,
-            "x-typia-optional": true,
-            "type": "integer",
-            "x-typia-typeTags": [
-              {
-                "target": "number",
-                "name": "Type<\"uint32\">",
-                "kind": "type",
-                "value": "uint32",
-                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
                 "exclusive": true
               }
             ]

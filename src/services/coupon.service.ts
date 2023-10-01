@@ -54,16 +54,16 @@ export class CouponService {
                 validAt: new Date(cache.coupon.validAt),
                 couponNumber: `${cache.coupon.type}:${cache.coupon.couponnumber}`
             } as CouponDto
+        }
 
         const coupon = await this.couponRepository.getBy(args)
         if(coupon) {
-                const dto = {
-                    salePrice: coupon.coupon.salePrice,
-                    validAt: new Date(coupon.coupon.validAt),
-                    couponNumber: `${coupon.coupon.type}:${coupon.coupon.couponnumber}`
-                } as CouponDto
-                return dto
-            }
+            const dto = {
+                salePrice: coupon.coupon.salePrice,
+                validAt: new Date(coupon.coupon.validAt),
+                couponNumber: `${coupon.coupon.type}:${coupon.coupon.couponnumber}`
+            } as CouponDto
+            return dto
         }
         return undefined
     }
