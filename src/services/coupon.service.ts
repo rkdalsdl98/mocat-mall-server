@@ -2,11 +2,9 @@ import { Injectable, Inject } from "@nestjs/common";
 import { Coupon, CouponCategory } from "src/types/coupon.types";
 import * as dotenv from "dotenv"
 import { v4 } from "uuid"
-import RedisService from "./redis.service";
 import { CouponRepository } from "src/repository/coupon/coupon.repository";
 import { CouponEntity } from "src/entity/coupon.entity";
 import { CouponFindOptions } from "src/repository/coupon/coupon_findoptions";
-import { CouponUpdateOptions } from "src/repository/coupon/coupon_updateoptiosn";
 import { CouponCreateOptions } from "src/repository/coupon/coupon_createoptions";
 
 dotenv.config()
@@ -16,7 +14,6 @@ export class CouponService {
     constructor(
         @Inject("CouponRepository")
         private readonly couponRepository: CouponRepository,
-        private readonly redisService: RedisService,
     ){}
 
     async getCoupons() : Promise<CouponEntity[] | CouponEntity | undefined> {
@@ -70,6 +67,8 @@ export class CouponService {
                 return false
             case "PAYBACK":
                 // 페이백 쿠폰 처리
+                return false
+            default:
                 return false
         }
     }

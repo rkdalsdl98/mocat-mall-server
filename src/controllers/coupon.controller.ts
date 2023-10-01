@@ -1,4 +1,4 @@
-import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
+import { TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 import { Controller } from "@nestjs/common";
 import { CouponEntity } from "src/entity/coupon.entity";
 import { ICouponQuery } from "src/query/icoupon.query";
@@ -41,6 +41,7 @@ export class CouponController {
 
     @TypedRoute.Delete("/:couponnumber")
     async deleteCoupon(
+        @TypedQuery() query : ICouponQuery,
         @TypedParam("couponnumber") couponnumber: string
     ) : Promise<void> {
         return await this.couponService.deleteCoupon({couponnumber})
