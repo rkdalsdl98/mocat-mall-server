@@ -4,12 +4,21 @@
     {
       "url": "http://127.0.0.1:3000",
       "description": "MocatMall - Develope"
+    },
+    {
+      "url": "http://183.102.220.27:3000",
+      "description": "MocatMall - External"
     }
   ],
   "info": {
-    "version": "0.0.1",
+    "description": "MocatMall API",
+    "contact": {
+      "email": "rkdalsdl112@gmai.com",
+      "name": "KangMin Han",
+      "url": "https://github.com/rkdalsdl98/mocat-mall-server"
+    },
+    "version": "1.0.0",
     "title": "mocat-server",
-    "description": "",
     "license": {
       "name": "UNLICENSED"
     }
@@ -17,7 +26,10 @@
   "paths": {
     "/coupon": {
       "get": {
-        "tags": [],
+        "tags": [
+          "쿠폰"
+        ],
+        "operationId": "CouponController.getCoupons",
         "parameters": [
           {
             "name": "query",
@@ -31,7 +43,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "모든 쿠폰 정보",
             "content": {
               "application/json": {
                 "schema": {
@@ -45,14 +57,42 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "쿠폰 정보 조회",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "coupon.getCoupons",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "모든 쿠폰 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "GET"
       }
     },
     "/coupon/{couponnumber}": {
       "get": {
-        "tags": [],
+        "tags": [
+          "쿠폰"
+        ],
+        "operationId": "CouponController.getCoupon",
         "parameters": [
           {
             "name": "query",
@@ -75,7 +115,7 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "쿠폰 정보",
             "content": {
               "application/json": {
                 "schema": {
@@ -86,13 +126,40 @@
             "x-nestia-encrypted": false
           }
         },
-        "description": "쿼리 파라미터로 받아오는 쿠폰 번호는 파싱이전 정보\ntype:couponnumber",
+        "description": "쿠폰 정보 조회\n\n쿼리 파라미터로 받아오는 쿠폰 번호는 파싱이전 정보\ntype:couponnumber",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "coupon.getCoupon",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "쿠폰 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "GET"
       },
       "delete": {
-        "tags": [],
+        "tags": [
+          "쿠폰"
+        ],
+        "operationId": "CouponController.deleteCoupon",
         "parameters": [
           {
             "name": "query",
@@ -119,14 +186,33 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "쿠폰 삭제(사용)\n\n1회성 쿠폰을 삭제하는 라우터",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "coupon.deleteCoupon",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "DELETE"
       }
     },
     "/coupon/create": {
       "post": {
-        "tags": [],
+        "tags": [
+          "쿠폰"
+        ],
+        "operationId": "CouponController.createCoupon",
         "parameters": [
           {
             "name": "query",
@@ -144,24 +230,43 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "쿠폰 등록\n\n어드민만 등록이 가능",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "coupon.create.createCoupon",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "POST"
       }
     },
     "/user": {
       "get": {
-        "tags": [],
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.getUsers",
         "parameters": [],
         "responses": {
           "200": {
-            "description": "",
+            "description": "모든 유저 정보",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "array",
                   "items": {
-                    "$ref": "#/components/schemas/UserEntity"
+                    "$ref": "#/components/schemas/UserDto"
                   }
                 }
               }
@@ -169,12 +274,40 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "테스트용\n유저 정보 조회\n\n클라이언트에서 유저정보를 모두 조회하는 상황은 없음",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "user.getUsers",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "모든 유저 정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "GET"
       },
       "post": {
-        "tags": [],
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.createUser",
         "parameters": [
           {
             "name": "query",
@@ -197,12 +330,31 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "유저 정보 등록",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "user.createUser",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "POST"
       },
       "patch": {
-        "tags": [],
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.updateUser",
         "parameters": [
           {
             "name": "query",
@@ -220,14 +372,33 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "유저 정보 갱신",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "user.updateUser",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "PATCH"
       }
     },
     "/user/{email}": {
       "get": {
-        "tags": [],
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.getUserBy",
         "parameters": [
           {
             "name": "email",
@@ -254,23 +425,51 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "유저정보",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserEntity.Nullable"
+                  "$ref": "#/components/schemas/UserDto.Nullable"
                 }
               }
             },
             "x-nestia-encrypted": false
           }
         },
+        "description": "이메일로 유저 정보 조회\n\n이메일은 고유한 값으로 저장됨",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "user.getUserBy",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "유저정보",
+                "kind": "text"
+              }
+            ]
+          },
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "GET"
       },
       "delete": {
-        "tags": [],
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.deleteUser",
         "parameters": [
           {
             "name": "email",
@@ -301,14 +500,33 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "유저 정보 삭제 (회원탈퇴)",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "user.deleteUser",
-        "x-nestia-jsDocTags": [],
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
         "x-nestia-method": "DELETE"
       }
     },
     "/user/coupon/connect": {
-      "post": {
-        "tags": [],
+      "patch": {
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.connectCoupon",
         "parameters": [
           {
             "name": "query",
@@ -331,9 +549,25 @@
             "x-nestia-encrypted": false
           }
         },
+        "description": "쿠폰등록",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
         "x-nestia-namespace": "user.coupon.connect.connectCoupon",
-        "x-nestia-jsDocTags": [],
-        "x-nestia-method": "POST"
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "PATCH"
       }
     }
   },
@@ -511,20 +745,10 @@
         ],
         "x-typia-jsDocTags": []
       },
-      "UserEntity": {
+      "UserDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
           "email": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "password": {
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "string"
@@ -534,17 +758,12 @@
             "x-typia-optional": false,
             "type": "string"
           },
-          "salt": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
           "orders": {
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderEntity"
+              "$ref": "#/components/schemas/OrderDto"
             }
           },
           "coupons": {
@@ -552,7 +771,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CouponEntity"
+              "$ref": "#/components/schemas/CouponDto"
             }
           },
           "qaboards": {
@@ -560,7 +779,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QABoardEntity"
+              "$ref": "#/components/schemas/QABoardDto"
             }
           },
           "basket": {
@@ -576,30 +795,21 @@
             "x-typia-optional": false,
             "type": "string",
             "format": "date-time"
-          },
-          "isAdmin": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "boolean"
           }
         },
         "nullable": false,
         "required": [
-          "id",
           "email",
-          "password",
           "address",
-          "salt",
           "orders",
           "coupons",
           "qaboards",
           "basket",
-          "createdAt",
-          "isAdmin"
+          "createdAt"
         ],
         "x-typia-jsDocTags": []
       },
-      "OrderEntity": {
+      "OrderDto": {
         "type": "object",
         "properties": {
           "orderId": {
@@ -613,31 +823,20 @@
             "type": "string"
           },
           "delivery": {
-            "$ref": "#/components/schemas/DeliveryEntity"
-          },
-          "userId": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
+            "$ref": "#/components/schemas/DeliveryDto"
           }
         },
         "nullable": false,
         "required": [
           "orderId",
           "paymentKey",
-          "delivery",
-          "userId"
+          "delivery"
         ],
         "x-typia-jsDocTags": []
       },
-      "DeliveryEntity": {
+      "DeliveryDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
           "orderId": {
             "x-typia-required": true,
             "x-typia-optional": false,
@@ -658,11 +857,6 @@
             "x-typia-optional": false,
             "type": "string"
           },
-          "state": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
           "products": {
             "x-typia-required": true,
             "x-typia-optional": false,
@@ -674,12 +868,10 @@
         },
         "nullable": false,
         "required": [
-          "id",
           "orderId",
           "address",
           "detailAddress",
           "memo",
-          "state",
           "products"
         ],
         "x-typia-jsDocTags": []
@@ -723,67 +915,9 @@
         ],
         "x-typia-jsDocTags": []
       },
-      "CouponEntity": {
+      "QABoardDto": {
         "type": "object",
         "properties": {
-          "coupon": {
-            "$ref": "#/components/schemas/Coupon_lt_CouponCategory_gt_"
-          }
-        },
-        "nullable": false,
-        "required": [
-          "coupon"
-        ],
-        "x-typia-jsDocTags": []
-      },
-      "Coupon_lt_CouponCategory_gt_": {
-        "type": "object",
-        "properties": {
-          "type": {
-            "$ref": "#/components/schemas/CouponCategory"
-          },
-          "couponnumber": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "validAt": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string",
-            "format": "date-time"
-          },
-          "salePrice": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          }
-        },
-        "nullable": false,
-        "required": [
-          "type",
-          "couponnumber",
-          "validAt",
-          "salePrice"
-        ],
-        "x-typia-jsDocTags": []
-      },
-      "CouponCategory": {
-        "type": "string",
-        "enum": [
-          "TEST",
-          "EVENT",
-          "PAYBACK"
-        ]
-      },
-      "QABoardEntity": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
           "title": {
             "x-typia-required": true,
             "x-typia-optional": false,
@@ -793,11 +927,6 @@
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "string"
-          },
-          "productId": {
-            "x-typia-required": false,
-            "x-typia-optional": true,
-            "type": "number"
           },
           "visited": {
             "x-typia-required": true,
@@ -819,13 +948,8 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/ReplyEntity"
+              "$ref": "#/components/schemas/ReplyDto"
             }
-          },
-          "userId": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
           },
           "createdAt": {
             "x-typia-required": true,
@@ -833,36 +957,27 @@
             "type": "string",
             "format": "date-time"
           },
-          "updatedAt": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string",
-            "format": "date-time"
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number"
           }
         },
         "nullable": false,
         "required": [
-          "id",
           "title",
           "contentText",
           "visited",
           "writerEmail",
           "writerName",
           "reply",
-          "userId",
-          "createdAt",
-          "updatedAt"
+          "createdAt"
         ],
         "x-typia-jsDocTags": []
       },
-      "ReplyEntity": {
+      "ReplyDto": {
         "type": "object",
         "properties": {
-          "id": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
           "contentText": {
             "x-typia-required": true,
             "x-typia-optional": false,
@@ -877,37 +992,20 @@
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "string"
-          },
-          "boardId": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
           }
         },
         "nullable": false,
         "required": [
-          "id",
           "contentText",
           "writerEmail",
-          "writerName",
-          "boardId"
+          "writerName"
         ],
         "x-typia-jsDocTags": []
       },
-      "UserEntity.Nullable": {
+      "UserDto.Nullable": {
         "type": "object",
         "properties": {
-          "id": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "number"
-          },
           "email": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "password": {
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "string"
@@ -917,17 +1015,12 @@
             "x-typia-optional": false,
             "type": "string"
           },
-          "salt": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
           "orders": {
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/OrderEntity"
+              "$ref": "#/components/schemas/OrderDto"
             }
           },
           "coupons": {
@@ -935,7 +1028,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/CouponEntity"
+              "$ref": "#/components/schemas/CouponDto"
             }
           },
           "qaboards": {
@@ -943,7 +1036,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QABoardEntity"
+              "$ref": "#/components/schemas/QABoardDto"
             }
           },
           "basket": {
@@ -959,26 +1052,17 @@
             "x-typia-optional": false,
             "type": "string",
             "format": "date-time"
-          },
-          "isAdmin": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "boolean"
           }
         },
         "nullable": true,
         "required": [
-          "id",
           "email",
-          "password",
           "address",
-          "salt",
           "orders",
           "coupons",
           "qaboards",
           "basket",
-          "createdAt",
-          "isAdmin"
+          "createdAt"
         ],
         "x-typia-jsDocTags": []
       },
@@ -1180,6 +1264,18 @@
         },
         "nullable": false,
         "x-typia-jsDocTags": []
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      },
+      "custom": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
   }

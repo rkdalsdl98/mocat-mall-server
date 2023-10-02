@@ -22,26 +22,11 @@ export class CouponService {
     async getCoupons() : Promise<CouponDto[] | undefined> {
         const caches = await this.redisService.get<CouponEntity[]>("coupons", CouponService.name)
         if(caches) {
-            const dto = caches.map(c => {
-                return {
-                    salePrice: c.coupon.salePrice,
-                    validAt: new Date(c.coupon.validAt),
-                    couponNumber: `${c.coupon.type}:${c.coupon.couponnumber}`
-                } as CouponDto
-            })
+            const dto = caches.map(c => {return CouponDto.fromEntity(c)})
             return dto
         }
         const coupons = await this.couponRepository.get()
-        if(coupons) {
-            const dto = coupons.map(c => {
-                return {
-                    salePrice: c.coupon.salePrice,
-                    validAt: new Date(c.coupon.validAt),
-                    couponNumber: `${c.coupon.type}:${c.coupon.couponnumber}`
-                } as CouponDto
-            })
-            return dto
-        }
+        if(coupons) return coupons.map(c => {return CouponDto.fromEntity(c)})
         return undefined
     }
 
@@ -49,22 +34,11 @@ export class CouponService {
         const caches = await this.redisService.get<CouponEntity[]>("coupons", CouponService.name)
         if(caches) {
             const cache = caches.find(c => `${c.coupon.type}:${c.coupon.couponnumber}` === args.couponnumber)
-            if(cache) return {
-                salePrice: cache.coupon.salePrice,
-                validAt: new Date(cache.coupon.validAt),
-                couponNumber: `${cache.coupon.type}:${cache.coupon.couponnumber}`
-            } as CouponDto
+            if(cache) return CouponDto.fromEntity(cache)
         }
 
         const coupon = await this.couponRepository.getBy(args)
-        if(coupon) {
-            const dto = {
-                salePrice: coupon.coupon.salePrice,
-                validAt: new Date(coupon.coupon.validAt),
-                couponNumber: `${coupon.coupon.type}:${coupon.coupon.couponnumber}`
-            } as CouponDto
-            return dto
-        }
+        if(coupon) return CouponDto.fromEntity(coupon)
         return undefined
     }
 
@@ -111,7 +85,7 @@ export class CouponService {
         const tokens : string[] = v4().split('-')
         // uuid를 아래처럼 인덱싱하면 쿼리에서 키 값으로 찾을때 속도 저하를 막아줌
         // 인덱스 부여는 맘대로 해도 되는 듯??
-        // DB에 저장 할때 쿠폰번호 => type:couponnumber 형식으로 저장
+        // DB에 저장 할때 쿠폰번호 => type:couponnumber:salePrice:validAt 형식으로 저장
         return {
             type: type,
             couponnumber: tokens[2] + tokens[1] + tokens[0] + tokens[3] + tokens[4],

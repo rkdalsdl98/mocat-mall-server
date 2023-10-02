@@ -1,5 +1,4 @@
 import { Inject } from "@nestjs/common";
-import { UserEntity } from "src/entity/user.entity";
 import { UserRepository } from "src/repository/user.repository";
 import { EmailService } from "./mailer.service";
 import { UserUpdateOptions } from "src/repository/user_updateoptions";
@@ -7,6 +6,8 @@ import { UserFindOptions } from "src/repository/user_findoptions";
 import { UserCreateOptions } from "src/repository/user_createoptions";
 import RedisService from "./redis.service";
 import { CouponService } from "./coupon.service";
+import { UserDto } from "src/dto/user.dto";
+import { UserEntity } from "src/entity/user.entity";
 
 export class UserService {
     constructor(
@@ -17,19 +18,25 @@ export class UserService {
         private readonly couponSerive: CouponService,
     ){}
 
-    async getUsers() : Promise<UserEntity[]> {
+    async getUsers() : Promise<UserDto[]> {
         const caches = await this.redisService.get<UserEntity[]>("users", UserService.name)
-        if(caches) return caches
-        return await this.userRepository.get()
+        if(caches) return caches.map(u => UserDto.fromEntity(u))
+
+        const entities = await this.userRepository.get()
+        return entities.map(u => UserDto.fromEntity(u))
     }
 
-    async getUserBy(args: UserFindOptions) : Promise<UserEntity | undefined | null> {
+    async getUserBy(args: UserFindOptions) : Promise<UserDto | undefined | null> {
         const caches = await this.redisService.get<UserEntity[]>("users", UserService.name)
         if(caches) {
             const cache = caches.find(u => u.email === args.email)
-            if(cache) return cache
+            if(cache) return UserDto.fromEntity(cache)
         }
-        return await this.userRepository.getBy(args)
+        
+        const entity = await this.userRepository.getBy(args)
+        if(entity) return UserDto.fromEntity(entity)
+        
+        return entity
     }
 
     async createUser(data: UserCreateOptions) : Promise<void> {
@@ -64,6 +71,8 @@ export class UserService {
         const isExisting = await this.couponSerive.getCouponBy({couponnumber: coupon})
         if(isExisting) {
             let caches = await this.redisService.get<UserEntity[]>("users", UserService.name)
+            coupon += `:${isExisting.salePrice}:${isExisting.validAt.toString()}` 
+
             if(caches) {
                 const user = caches.find(u => u.email === args.email)
                 if(user && user.coupons.includes(coupon)) return false
