@@ -251,6 +251,217 @@
         "x-nestia-method": "POST"
       }
     },
+    "/qaboard": {
+      "get": {
+        "tags": [
+          "질문글"
+        ],
+        "operationId": "QABoardController.getBoards",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "질문글 리스트",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/QABoardDto"
+                  }
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "질문글 리스트 불러오기",
+        "x-nestia-namespace": "qaboard.getBoards",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "질문글 리스트",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "GET"
+      },
+      "post": {
+        "tags": [
+          "질문글"
+        ],
+        "operationId": "QABoardController.createBoard",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IQABoardQuery"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "질문글 등록",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-nestia-namespace": "qaboard.createBoard",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "POST"
+      },
+      "patch": {
+        "tags": [
+          "질문글"
+        ],
+        "operationId": "QABoardController.updateBoard",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IQABoardQuery.IQABoardQueryUpdateOtions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "질문글 수정",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-nestia-namespace": "qaboard.updateBoard",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "PATCH"
+      },
+      "delete": {
+        "tags": [
+          "질문글"
+        ],
+        "operationId": "QABoardController.deleteBoard",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IQABoardQuery"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "질문글 삭제",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-nestia-namespace": "qaboard.deleteBoard",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "DELETE"
+      }
+    },
+    "/qaboard/{boardId}": {
+      "get": {
+        "tags": [
+          "질문글"
+        ],
+        "operationId": "QABoardController.getBoardBy",
+        "parameters": [
+          {
+            "name": "boardId",
+            "in": "path",
+            "schema": {
+              "type": "number"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "질문글",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QABoardDto.Nullable"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "질문글 불러오기",
+        "x-nestia-namespace": "qaboard.getBoardBy",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "질문글",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "GET"
+      }
+    },
     "/user": {
       "get": {
         "tags": [
@@ -745,6 +956,244 @@
         ],
         "x-typia-jsDocTags": []
       },
+      "QABoardDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "contentText": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "visited": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "writerEmail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "reply": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplyDto"
+            }
+          },
+          "createdAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "title",
+          "contentText",
+          "visited",
+          "writerEmail",
+          "writerName",
+          "reply",
+          "createdAt"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ReplyDto": {
+        "type": "object",
+        "properties": {
+          "contentText": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerEmail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "contentText",
+          "writerEmail",
+          "writerName"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "QABoardDto.Nullable": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "contentText": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "visited": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "writerEmail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "writerName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "reply": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReplyDto"
+            }
+          },
+          "createdAt": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "number"
+          }
+        },
+        "nullable": true,
+        "required": [
+          "title",
+          "contentText",
+          "visited",
+          "writerEmail",
+          "writerName",
+          "reply",
+          "createdAt"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IQABoardQuery": {
+        "type": "object",
+        "properties": {
+          "boardId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "IQABoardQuery.IQABoardQueryUpdateOtions": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 20,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<20>",
+                "kind": "maxLength",
+                "value": 20,
+                "validate": "$input.length <= 20",
+                "exclusive": true
+              }
+            ]
+          },
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          },
+          "contentText": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 50,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<50>",
+                "kind": "maxLength",
+                "value": 50,
+                "validate": "$input.length <= 50",
+                "exclusive": true
+              }
+            ]
+          },
+          "boardId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
       "UserDto": {
         "type": "object",
         "properties": {
@@ -779,7 +1228,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QABoardDto"
+              "$ref": "#/components/schemas/QABoardMetaDto"
             }
           },
           "basket": {
@@ -915,9 +1364,14 @@
         ],
         "x-typia-jsDocTags": []
       },
-      "QABoardDto": {
+      "QABoardMetaDto": {
         "type": "object",
         "properties": {
+          "boardId": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
           "title": {
             "x-typia-required": true,
             "x-typia-optional": false,
@@ -933,72 +1387,20 @@
             "x-typia-optional": false,
             "type": "number"
           },
-          "writerEmail": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "writerName": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "reply": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/ReplyDto"
-            }
-          },
           "createdAt": {
             "x-typia-required": true,
             "x-typia-optional": false,
             "type": "string",
             "format": "date-time"
-          },
-          "productId": {
-            "x-typia-required": false,
-            "x-typia-optional": true,
-            "type": "number"
           }
         },
         "nullable": false,
         "required": [
+          "boardId",
           "title",
           "contentText",
           "visited",
-          "writerEmail",
-          "writerName",
-          "reply",
           "createdAt"
-        ],
-        "x-typia-jsDocTags": []
-      },
-      "ReplyDto": {
-        "type": "object",
-        "properties": {
-          "contentText": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "writerEmail": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          },
-          "writerName": {
-            "x-typia-required": true,
-            "x-typia-optional": false,
-            "type": "string"
-          }
-        },
-        "nullable": false,
-        "required": [
-          "contentText",
-          "writerEmail",
-          "writerName"
         ],
         "x-typia-jsDocTags": []
       },
@@ -1036,7 +1438,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/QABoardDto"
+              "$ref": "#/components/schemas/QABoardMetaDto"
             }
           },
           "basket": {

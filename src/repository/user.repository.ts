@@ -10,6 +10,7 @@ import { UserCreateOptions } from "./user_createoptions";
 import { ReplyEntity } from "src/entity/reply.entity";
 import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
+import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";
 
 @Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
@@ -180,29 +181,13 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                 var item = v.qaboards[key]
                 if(item) {
                     return {
-                        id: item['id'],
+                        boardId: item['id'],
                         title: item['title'],
                         contentText: item['contentText'],
                         productId: item['productId'] ?? undefined,
-                        visited: item['visited'],
-                        writerEmail: item['writerEmail'],
-                        writerName: item['writerName'],
-                        reply: [...Object.keys(item['reply'])].map(key => {
-                            var item = item['reply'][key]
-                            if(item) {
-                                return {
-                                    id: item['id'],
-                                    contentText: item['contentText'],
-                                    writerEmail: item['writerEmail'],
-                                    writerName: item['writerName'],
-                                    boardId: item['boardId'],
-                                } as ReplyEntity
-                            }
-                        }),
-                        userId: item['userId'],
+                        visited: item['visited'], 
                         createdAt: item['createdAt'],
-                        updatedAt: item['updatedAt'],
-                    } as QABoardEntity
+                    } as QABoardMetaEntity
                 }
             }),
             coupons: v.coupons,
