@@ -9,7 +9,6 @@ export interface QABoardEntity {
     readonly writerEmail: string
     readonly writerName: string
     readonly reply: ReplyEntity[]
-    readonly userId: number
     readonly createdAt: Date
     readonly updatedAt: Date
 }
