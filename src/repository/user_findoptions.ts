@@ -1,6 +1,6 @@
-import { IFindOptions } from "src/interface/respository/ifindoptions";
+import { IFindOptions } from "src/interface/options/ifindoptions"
 
-export class UserFindOptions implements IFindOptions {
+export interface UserFindOptions extends IFindOptions {
     readonly id?: number
     readonly email?: string
 }

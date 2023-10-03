@@ -1,4 +1,4 @@
-import { ICreateOptions } from "./icreateoptions";
+import { ICreateOptions } from "../options/icreateoptions";
 import { IFindOptions } from "./ifindoptions";
 import { IUpdateOptions } from "./iupdateoptions";
 

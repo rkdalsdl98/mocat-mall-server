@@ -1,6 +1,6 @@
-import { IUpdateOptions } from "src/interface/respository/iupdateoptions";
+import { IUpdateOptions } from "src/interface/options/iupdateoptions"
 
-export class UserUpdateOptions implements IUpdateOptions {
+export interface UserUpdateOptions extends IUpdateOptions {
     readonly name?: string
     readonly address?: string
 }
