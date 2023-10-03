@@ -19,7 +19,7 @@ export class CouponController {
      * @returns 모든 쿠폰 정보
      * @security bearer
      */
-    @TypedRoute.Get()
+    @TypedRoute.Get("all")
     async getCoupons(
         @TypedQuery() query : ICouponQuery
     ) : Promise<CouponDto[] | undefined> {
@@ -35,12 +35,11 @@ export class CouponController {
      * @returns 쿠폰 정보
      * @security bearer
      */
-    @TypedRoute.Get("/:couponnumber")
+    @TypedRoute.Get()
     async getCoupon(
         @TypedQuery() query : ICouponQuery,
-        @TypedParam("couponnumber") couponnumber: string
     ) : Promise<CouponDto | null | undefined> {
-        return await this.couponService.getCouponBy({couponnumber})
+        return await this.couponService.getCouponBy({ couponnumber: query.coupon })
     }
 
     /**

@@ -1,8 +1,9 @@
 import { tags } from "typia"
+import { IOptionsQuery } from "./ioptions.query"
 
-export interface IUserQuery {
+export interface IUserQuery extends IOptionsQuery {
     readonly email?: string & tags.Format<"email">
-        readonly name?: string & tags.MaxLength<10>
+    readonly name?: string & tags.MaxLength<10>
 }
 export namespace IUserQuery {
     export interface IUserQueryUpdateOptions extends IUserQuery {

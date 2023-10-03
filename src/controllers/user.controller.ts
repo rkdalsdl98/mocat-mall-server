@@ -25,7 +25,9 @@ export class UserController {
      * @security bearer
      */
     @TypedRoute.Get()
-    async getUsers() : Promise<UserDto[] | undefined> {
+    async getUsers(
+        @TypedQuery() query : IUserQuery
+    ) : Promise<UserDto[] | undefined> {
         return this.userService.getUsers()
     }
 
@@ -37,11 +39,11 @@ export class UserController {
      * @returns 유저정보
      * @security bearer
      */
-    @TypedRoute.Get("/:email")
+    @TypedRoute.Get("/byemail")
     async getUserBy(
-        @TypedParam("email") email: string & tags.Format<"email">
+        @TypedQuery() query : IUserQuery,
     ) : Promise<UserDto | null | undefined> {
-        return this.userService.getUserBy({email})
+        return this.userService.getUserBy({ email: query.email })
     }
 
     /**
