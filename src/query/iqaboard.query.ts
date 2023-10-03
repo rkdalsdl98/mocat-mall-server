@@ -1,6 +1,7 @@
 import { tags } from "typia"
+import { IOptionsQuery } from "./ioptions.query"
 
-export interface IQABoardQuery {
+export interface IQABoardQuery extends IOptionsQuery {
     readonly boardId?: number & tags.Type<"uint32">
 }
 export namespace IQABoardQuery {
