@@ -461,7 +461,17 @@
           "유저"
         ],
         "operationId": "UserController.getUsers",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IUserQuery"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
         "responses": {
           "200": {
             "description": "모든 유저 정보",
@@ -597,7 +607,7 @@
         "x-nestia-method": "PATCH"
       }
     },
-    "/user/{email}": {
+    "/user/byemail": {
       "get": {
         "tags": [
           "유저"
@@ -605,23 +615,10 @@
         "operationId": "UserController.getUserBy",
         "parameters": [
           {
-            "name": "email",
-            "in": "path",
+            "name": "query",
+            "in": "query",
             "schema": {
-              "type": "string",
-              "format": "email",
-              "x-typia-typeTags": [
-                {
-                  "target": "string",
-                  "name": "Format<\"email\">",
-                  "kind": "format",
-                  "value": "email",
-                  "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
-                  "exclusive": [
-                    "pattern"
-                  ]
-                }
-              ]
+              "$ref": "#/components/schemas/IUserQuery"
             },
             "description": "",
             "required": true
@@ -646,7 +643,7 @@
             "bearer": []
           }
         ],
-        "x-nestia-namespace": "user.getUserBy",
+        "x-nestia-namespace": "user.byemail.getUserBy",
         "x-nestia-jsDocTags": [
           {
             "name": "returns",
@@ -668,7 +665,58 @@
           }
         ],
         "x-nestia-method": "GET"
-      },
+      }
+    },
+    "/user/coupon/connect": {
+      "patch": {
+        "tags": [
+          "유저"
+        ],
+        "operationId": "UserController.connectCoupon",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IUserQuery.IUserQueryConnectCouponOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "쿠폰등록",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-nestia-namespace": "user.coupon.connect.connectCoupon",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "security",
+            "text": [
+              {
+                "text": "bearer",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "PATCH"
+      }
+    },
+    "/user/{email}": {
       "delete": {
         "tags": [
           "유저"
@@ -723,55 +771,6 @@
           }
         ],
         "x-nestia-method": "DELETE"
-      }
-    },
-    "/user/coupon/connect": {
-      "patch": {
-        "tags": [
-          "유저"
-        ],
-        "operationId": "UserController.connectCoupon",
-        "parameters": [
-          {
-            "name": "query",
-            "in": "query",
-            "schema": {
-              "$ref": "#/components/schemas/IUserQuery.IUserQueryConnectCouponOptions"
-            },
-            "description": "",
-            "required": true
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {}
-              }
-            },
-            "x-nestia-encrypted": false
-          }
-        },
-        "description": "쿠폰등록",
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "x-nestia-namespace": "user.coupon.connect.connectCoupon",
-        "x-nestia-jsDocTags": [
-          {
-            "name": "security",
-            "text": [
-              {
-                "text": "bearer",
-                "kind": "text"
-              }
-            ]
-          }
-        ],
-        "x-nestia-method": "PATCH"
       }
     }
   },
@@ -1165,6 +1164,47 @@
                 "kind": "type",
                 "value": "uint32",
                 "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "IUserQuery": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "email",
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"email\">",
+                "kind": "format",
+                "value": "email",
+                "validate": "/^(([^<>()[\\]\\.,;:\\s@\\\"]+(\\.[^<>()[\\]\\.,;:\\s@\\\"]+)*)|(\\\".+\\\"))@(([^<>()[\\]\\.,;:\\s@\\\"]+\\.)+[^<>()[\\]\\.,;:\\s@\\\"]{2,})$/i.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "name": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 10,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<10>",
+                "kind": "maxLength",
+                "value": 10,
+                "validate": "$input.length <= 10",
                 "exclusive": true
               }
             ]
