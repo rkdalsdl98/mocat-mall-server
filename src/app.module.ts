@@ -4,12 +4,14 @@ import { UserModule } from './modules/user.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import smtpConfig from 'smtp.config';
 import { CouponModule } from './modules/coupon.module';
+import { QABoardModule } from './modules/qaboard.module';
 
 @Module({
   imports: [
     RedisModule, 
     UserModule,
     CouponModule,
+    QABoardModule,
     MailerModule.forRoot(smtpConfig),
   ],
 })

@@ -1,5 +1,5 @@
-import { QABoardEntity } from "src/entity/qaboard.entity"
-import { ReplyDto } from "./reply.dto"
+import { QABoardEntity } from "src/entity/qaboard.entity";
+import { ReplyDto } from "./reply.dto";
 
 export class QABoardDto {
     constructor(
