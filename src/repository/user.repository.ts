@@ -1,6 +1,5 @@
-import { OnModuleDestroy, OnModuleInit, Logger } from "@nestjs/common";
+import { OnModuleDestroy, OnModuleInit, Logger, Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { CouponEntity } from "src/entity/coupon.entity";
 import { QABoardEntity } from "src/entity/qaboard.entity";
 import { UserEntity } from "src/entity/user.entity";
 import { SimpleProductModel } from "src/model/simple_product.model";
@@ -12,6 +11,7 @@ import { ReplyEntity } from "src/entity/reply.entity";
 import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 
+@Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
     async onModuleInit() {
         await this.$connect()
@@ -29,7 +29,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         return (await this.user.findMany({
             include: {
                 qaboards: true,
-                coupons: true,
                 orders: true,
             },
             where: {
@@ -45,11 +44,11 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             return this.toEntity(e)
         })
     }
+
     async getBy(args: UserFindOptions): Promise<UserEntity | null | undefined> {
         const user = await this.user.findUnique({
             include: {
                 qaboards: true,
-                coupons: true,
                 orders: true,
             },
             where: {
@@ -67,8 +66,9 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             return null
         }
     }
-    async updateBy(data: UserUpdateOptions, args: UserFindOptions): Promise<void> {
-        await this.user.update({
+
+    async updateBy(data: UserUpdateOptions, args: UserFindOptions): Promise<UserEntity> {
+        return this.toEntity(await this.user.update({
             where: {
                 id: args.id,
                 email: args.email,
@@ -76,16 +76,18 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             data: {
                 name: data.name,
                 address: data.address,
-                coupons: {
-                    
-                }
+            },
+            include: {
+                qaboards: true,
+                orders: true,
             }
         })
         .catch(err => {
             Logger.error(`유저 정보 업데이트 실패`, err.toString(), UserRepository.name)  
             throw err
-         })
+         }))
     }
+
     async deleteBy(args: UserFindOptions): Promise<void> {
         await this.user.delete({
             where: {
@@ -99,20 +101,42 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
          })
     }
     
-    async create(data: UserCreateOptions, salt: string): Promise<void> {
-        await this.user.create({
+    async create(data: UserCreateOptions, salt: string): Promise<UserEntity> {
+        const user = await this.user.create({
             data: {
                 email: data.email!,
                 password: data.password!,
                 address: data.address!,
                 salt: salt,
                 name: data.name!,
+            },
+            include: {
+                qaboards: true,
+                orders: true,
             }
         })
         .catch(err => {
             Logger.error(`유저 정보 등록 실패`, err.toString(), UserRepository.name) 
             throw err
         })
+        return this.toEntity(user)
+    }
+
+    async connectCoupon(coupon : string, args: UserFindOptions) : Promise<UserEntity> {
+        return this.toEntity(await this.user.update({
+            where: { email: args.email },
+            data: {
+                coupons: { push: coupon }
+            },
+            include: {
+                qaboards: true,
+                orders: true,
+            }
+        })
+        .catch(err => {
+            Logger.error(`쿠폰 등록 실패`, err.toString(), UserRepository.name) 
+            throw err
+        }))
     }
 
     // 필터 타입으로 교체
@@ -181,17 +205,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                     } as QABoardEntity
                 }
             }),
-            coupons: [...Object.keys(v.coupons)].map(key => {
-                var item = v.qaboards[key]
-                if(item) {
-                    return {
-                        salePrice: item['salePrice'],
-                        validAt: item['validAt'],
-                        couponNumber: item['couponNumber'],
-                        userId: item['userId'],
-                    } as CouponEntity
-                }
-            }),
+            coupons: v.coupons,
             address: v.address,
             basket: [...Object.keys(v.baskets)].map(key => {
                 var item = v.baskets[key]

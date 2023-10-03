@@ -1,30 +1,20 @@
 import { tags } from "typia"
 
 export interface IUserQuery {
-    readonly findoption?: IUserQuery.IUserQueryFindOptions
+    readonly email?: string & tags.Format<"email">
+        readonly name?: string & tags.MaxLength<10>
 }
 export namespace IUserQuery {
-    export interface IUserQueryFindOptions {
-        readonly id?: number & tags.Type<"uint32">
-        readonly email?: string & tags.Format<"email">
-        readonly name?: string & tags.MaxLength<10>
-    }
-
-    export interface IUserQueryUpdateOptions extends IUserQuery.IUserQueryFindOptions {
+    export interface IUserQueryUpdateOptions extends IUserQuery {
         readonly address?: string & tags.MaxLength<50>
     }
 
-    export interface IUserQueryCreateOptions extends IUserQuery.IUserQueryFindOptions {
+    export interface IUserQueryCreateOptions extends IUserQuery {
         readonly password?: string & tags.MinLength<9>
         readonly address?: string & tags.MaxLength<50>
     }
 
-    export interface IUserQueryUpdateOrCreateCouponOptions extends IUserQuery.IUserQueryFindOptions {
-        readonly couponNumber?: string & tags.MaxLength<20> // "쿠폰식별자<10>:쿠폰번호<10>"
-        readonly salePrice?: number & tags.Type<"int32">
-    }
-
-    export interface IUserQueryQABoardOptions extends IUserQuery.IUserQueryFindOptions {
+    export interface IUserQueryQABoardOptions extends IUserQuery {
         readonly title?: string & tags.MaxLength<20>
         readonly contentText?: string & tags.MaxLength<200>
         readonly productId?: number & tags.Type<"uint32">
@@ -39,8 +29,12 @@ export namespace IUserQuery {
         readonly boardId?: number & tags.Type<"uint32">
     }
 
-    export interface IUserQueryUpdateOrderOptions extends IUserQuery.IUserQueryFindOptions {
+    export interface IUserQueryUpdateOrderOptions extends IUserQuery {
         readonly orderId?: string & tags.MaxLength<60>
         readonly paymentKey?: string & tags.MaxLength<50>
+    }
+
+    export interface IUserQueryConnectCouponOptions extends IUserQuery {
+       readonly coupon: string & tags.MinLength<37> & tags.MaxLength<39>
     }
 }
