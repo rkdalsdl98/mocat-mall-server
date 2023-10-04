@@ -6,6 +6,7 @@ import smtpConfig from 'smtp.config';
 import { CouponModule } from './modules/coupon.module';
 import { QABoardModule } from './modules/qaboard.module';
 import { ProductModule } from './modules/product.module';
+import { OrderService } from './services/order.service';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ProductModule } from './modules/product.module';
     CouponModule,
     QABoardModule,
     ProductModule,
+    OrderService,
     MailerModule.forRoot(smtpConfig),
   ],
 })
