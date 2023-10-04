@@ -244,6 +244,172 @@
         "x-nestia-method": "DELETE"
       }
     },
+    "/product": {
+      "get": {
+        "tags": [
+          "상품"
+        ],
+        "operationId": "ProductController.getProducts",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "상품 리스트",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProductDto"
+                  }
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "상품 리스트 불러오기",
+        "x-nestia-namespace": "product.getProducts",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "상품 리스트",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "GET"
+      },
+      "post": {
+        "tags": [
+          "상품"
+        ],
+        "operationId": "ProductController.addProduct",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IProductQuery.IProductQueryUpdateOrCreateOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "상품 등록\n\n권한이 있는 사람만 가능",
+        "x-nestia-namespace": "product.addProduct",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "POST"
+      },
+      "patch": {
+        "tags": [
+          "상품"
+        ],
+        "operationId": "ProductController.updateProduct",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IProductQuery.IProductQueryUpdateOrCreateOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "상품 갱신\n\n권한이 있는 사람만 가능",
+        "x-nestia-namespace": "product.updateProduct",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "PATCH"
+      },
+      "delete": {
+        "tags": [
+          "상품"
+        ],
+        "operationId": "ProductController.deleteProduct",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IProductQuery.IProductQueryDeleteOptions"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "상품 삭제\n\n권한이 있는 사람만 가능",
+        "x-nestia-namespace": "product.deleteProduct",
+        "x-nestia-jsDocTags": [],
+        "x-nestia-method": "DELETE"
+      }
+    },
+    "/product/byid": {
+      "get": {
+        "tags": [
+          "상품"
+        ],
+        "operationId": "ProductController.getProductBy",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/IProductQuery"
+            },
+            "description": "",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "상품",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDto.Nullable"
+                }
+              }
+            },
+            "x-nestia-encrypted": false
+          }
+        },
+        "description": "상품 불러오기",
+        "x-nestia-namespace": "product.byid.getProductBy",
+        "x-nestia-jsDocTags": [
+          {
+            "name": "returns",
+            "text": [
+              {
+                "text": "상품",
+                "kind": "text"
+              }
+            ]
+          }
+        ],
+        "x-nestia-method": "GET"
+      }
+    },
     "/qaboard": {
       "get": {
         "tags": [
@@ -932,6 +1098,280 @@
           "type",
           "coupon"
         ],
+        "x-typia-jsDocTags": []
+      },
+      "ProductDto": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "price": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "thumbnail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/ProductDetailDto"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "productName",
+          "price",
+          "thumbnail",
+          "detail"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ProductDetailDto": {
+        "type": "object",
+        "properties": {
+          "colors": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "x-typia-required": true,
+              "x-typia-optional": false,
+              "type": "string"
+            }
+          },
+          "sizes": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "x-typia-required": true,
+              "x-typia-optional": false,
+              "type": "string"
+            }
+          },
+          "images": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "x-typia-required": true,
+              "x-typia-optional": false,
+              "type": "string"
+            }
+          },
+          "description": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "colors",
+          "sizes",
+          "images",
+          "description"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IProductQuery": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "x-typia-jsDocTags": []
+      },
+      "ProductDto.Nullable": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "price": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "thumbnail": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/ProductDetailDto"
+          }
+        },
+        "nullable": true,
+        "required": [
+          "productName",
+          "price",
+          "thumbnail",
+          "detail"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IProductQuery.IProductQueryUpdateOrCreateOptions": {
+        "type": "object",
+        "properties": {
+          "productName": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "maxLength": 20,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<20>",
+                "kind": "maxLength",
+                "value": 20,
+                "validate": "$input.length <= 20",
+                "exclusive": true
+              }
+            ]
+          },
+          "price": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          },
+          "thumbnail": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "string",
+            "format": "url",
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "Format<\"url\">",
+                "kind": "format",
+                "value": "url",
+                "validate": "/^[a-zA-Z0-9]+:\\/\\/(?:www.)?[-a-zA-Z0-9@:%._+~#=]{1,256}.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$/.test($input)",
+                "exclusive": [
+                  "pattern"
+                ]
+              }
+            ]
+          },
+          "colors": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "array",
+            "items": {
+              "x-typia-required": false,
+              "x-typia-optional": true,
+              "type": "string"
+            }
+          },
+          "sizes": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "array",
+            "items": {
+              "x-typia-required": false,
+              "x-typia-optional": true,
+              "type": "string"
+            }
+          },
+          "images": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "array",
+            "items": {
+              "x-typia-required": false,
+              "x-typia-optional": true,
+              "type": "string"
+            }
+          },
+          "descriptions": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string",
+            "maxLength": 200,
+            "x-typia-typeTags": [
+              {
+                "target": "string",
+                "name": "MaxLength<200>",
+                "kind": "maxLength",
+                "value": 200,
+                "validate": "$input.length <= 200",
+                "exclusive": true
+              }
+            ]
+          },
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
+        "required": [
+          "descriptions"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "IProductQuery.IProductQueryDeleteOptions": {
+        "type": "object",
+        "properties": {
+          "productId": {
+            "x-typia-required": false,
+            "x-typia-optional": true,
+            "type": "integer",
+            "x-typia-typeTags": [
+              {
+                "target": "number",
+                "name": "Type<\"uint32\">",
+                "kind": "type",
+                "value": "uint32",
+                "validate": "Math.floor($input) === $input && 0 <= $input && $input <= 4294967295",
+                "exclusive": true
+              }
+            ]
+          }
+        },
+        "nullable": false,
         "x-typia-jsDocTags": []
       },
       "QABoardDto": {

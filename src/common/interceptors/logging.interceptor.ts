@@ -4,11 +4,11 @@ import {
     Injectable, 
     NestInterceptor,
     BadRequestException,
-    BadGatewayException
 } from "@nestjs/common";
-import { Observable } from "rxjs";
+import { Observable, of } from "rxjs";
 import { tap } from 'rxjs/operators';
 import { IOptionsQuery } from "src/query/ioptions.query";
+import { ERROR, ResponseFailedForm } from "../form/response.form";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -24,9 +24,10 @@ export class LoggingInterceptor implements NestInterceptor {
         if("email" in query) uniData = query.email
         else if("coupon" in query) uniData = query.coupon
         else if ("boardId" in query) uniData = query.boardId
-        else throw new BadGatewayException()
+        else if("productId" in query) uniData = query.productId
+        else return of(ERROR.BadRequest)
 
-        if(method === null) throw new BadRequestException()
+        if(method === null) return of(ERROR.BadRequest)
         const before = Date.now()
         console.log(`[${Intl.DateTimeFormat('kr').format(before)}]: ${reqAddress} : ${uniData} :[${path} : ${method}]`)
         return next.handle().pipe(
