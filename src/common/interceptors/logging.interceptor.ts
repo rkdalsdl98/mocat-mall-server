@@ -3,12 +3,11 @@ import {
     ExecutionContext, 
     Injectable, 
     NestInterceptor,
-    BadRequestException,
 } from "@nestjs/common";
 import { Observable, of } from "rxjs";
 import { tap } from 'rxjs/operators';
 import { IOptionsQuery } from "src/query/ioptions.query";
-import { ERROR, ResponseFailedForm } from "../form/response.form";
+import { ERROR } from "../form/response.form";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
