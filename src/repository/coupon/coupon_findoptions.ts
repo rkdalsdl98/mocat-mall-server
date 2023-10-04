@@ -1,4 +1,4 @@
-import { IFindOptions } from "src/interface/options/ifindoptions";
+import { IFindOptions } from "src/interface/options/ifindoptions"
 
 export interface CouponFindOptions extends IFindOptions {
     readonly couponnumber: string // 파싱되지 않은 쿠폰번호
