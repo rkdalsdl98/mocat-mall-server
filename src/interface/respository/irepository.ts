@@ -1,6 +1,6 @@
-import { ICreateOptions } from "./icreateoptions";
-import { IFindOptions } from "./ifindoptions";
-import { IUpdateOptions } from "./iupdateoptions";
+import { ICreateOptions } from "../options/icreateoptions";
+import { IFindOptions } from "../options/ifindoptions";
+import { IUpdateOptions } from "../options/iupdateoptions";
 
 export interface IRepository<T>{
     get?(args?: IFindOptions) : Promise<T[]>
@@ -8,5 +8,5 @@ export interface IRepository<T>{
     updateBy?(data: IUpdateOptions, args?: IFindOptions) : Promise<unknown>
     deleteBy?(args?: IFindOptions) : Promise<void>
     create?(data: ICreateOptions, args?: unknown) : Promise<unknown>
-    toEntity?(value) : T
+    toEntity?(value) : T | undefined | null
 }

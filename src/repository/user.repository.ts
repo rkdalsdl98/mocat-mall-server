@@ -1,13 +1,11 @@
 import { OnModuleDestroy, OnModuleInit, Logger, Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
-import { QABoardEntity } from "src/entity/qaboard.entity";
 import { UserEntity } from "src/entity/user.entity";
 import { SimpleProductModel } from "src/model/simple_product.model";
 import { UserFindOptions } from "./user_findoptions";
 import { UserUpdateOptions } from "./user_updateoptions";
 import { IRepository } from "src/interface/respository/irepository";
 import { UserCreateOptions } from "./user_createoptions";
-import { ReplyEntity } from "src/entity/reply.entity";
 import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";

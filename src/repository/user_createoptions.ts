@@ -1,6 +1,6 @@
-import { ICreateOptions } from "src/interface/respository/icreateoptions";
+import { ICreateOptions } from "src/interface/options/icreateoptions";
 
-export class UserCreateOptions implements ICreateOptions {
+export interface UserCreateOptions extends ICreateOptions {
     readonly email?: string
     password?: string
     readonly name?: string

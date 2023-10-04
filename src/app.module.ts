@@ -5,6 +5,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import smtpConfig from 'smtp.config';
 import { CouponModule } from './modules/coupon.module';
 import { QABoardModule } from './modules/qaboard.module';
+import { ProductModule } from './modules/product.module';
 
 @Module({
   imports: [
@@ -12,6 +13,7 @@ import { QABoardModule } from './modules/qaboard.module';
     UserModule,
     CouponModule,
     QABoardModule,
+    ProductModule,
     MailerModule.forRoot(smtpConfig),
   ],
 })
