@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { CACHE_MANAGER } from '@nestjs/cache-manager/dist';
 import { Cache } from 'cache-manager';
+import { ERROR } from "src/common/form/response.form";
 
 @Injectable()
 export default class RedisService {
@@ -13,7 +14,7 @@ export default class RedisService {
         return await this.redisClient.get(key)
         .catch(e => {
             Logger.error("레디스 캐시 정보 가져오기 실패", e.toString(), path)
-            throw e
+            throw typeof ERROR.ServerCacheError
         }) as T
     }
 
@@ -21,7 +22,7 @@ export default class RedisService {
         await this.redisClient.set(key, value, ttl)
         .catch(e => {
             Logger.error("레디스 캐시 정보 업데이트 실패", e.toString(), path)
-            throw e
+            throw typeof ERROR.ServerCacheError
         })
     }
 
@@ -29,7 +30,7 @@ export default class RedisService {
         await this.redisClient.del(key)
         .catch(e => {
             Logger.error("레디스 캐시 삭제 실패", e.toString(), path)
-            throw e
+            throw typeof ERROR.ServerCacheError
         })
     }
 
@@ -37,7 +38,7 @@ export default class RedisService {
         await this.redisClient.reset()
         .catch(e => {
             Logger.error("레디스 캐시 리셋 실패", e.toString(), path)
-            throw e
+            throw typeof ERROR.ServerCacheError
         })
     }
 }

@@ -9,6 +9,7 @@ import { UserCreateOptions } from "./user_createoptions";
 import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";
+import { ERROR } from "src/common/form/response.form";
 
 @Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
@@ -37,7 +38,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => { 
             Logger.error(`유저 정보 조회 실패`, err.toString(), UserRepository.name) 
-            throw err 
+            throw typeof ERROR.ServerDatabaseError 
         }))
         .map(e => {
             return this.toEntity(e)
@@ -57,7 +58,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => { 
             Logger.error(`유저 정보 조회 실패`, err.toString(), UserRepository.name) 
-            throw err 
+            throw typeof ERROR.ServerDatabaseError 
         })
         if(user) {
             return this.toEntity(user)
@@ -83,7 +84,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`유저 정보 업데이트 실패`, err.toString(), UserRepository.name)  
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
          }))
     }
 
@@ -96,7 +97,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`유저 정보 삭제 실패`, err.toString(), UserRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
          })
     }
     
@@ -116,7 +117,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`유저 정보 등록 실패`, err.toString(), UserRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         })
         return this.toEntity(user)
     }
@@ -134,7 +135,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`쿠폰 등록 실패`, err.toString(), UserRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         }))
     }
 

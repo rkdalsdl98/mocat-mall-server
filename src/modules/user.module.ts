@@ -7,15 +7,23 @@ import RedisService from 'src/services/redis.service';
 import { UserService } from 'src/services/user.service';
 import { CouponModule } from './coupon.module';
 import { CouponRepository } from 'src/repository/coupon/coupon.repository';
+import { JwtStrategy } from 'src/common/jwt/jwt_strategy';
+import { JwtService } from "@nestjs/jwt";
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
-    imports: [CouponModule],
+    imports: [
+        CouponModule,
+        PassportModule.register({ defaultStrategy: 'jwt' }),
+    ],
     controllers: [UserController],
     providers: [
         EmailService,
         UserService,
         RedisService,
         CouponService,
+        JwtStrategy,
+        JwtService,
         {
             provide: "UserRepository",
             useClass: UserRepository,
@@ -24,6 +32,10 @@ import { CouponRepository } from 'src/repository/coupon/coupon.repository';
             provide: "CouponRepository",
             useClass: CouponRepository,
         }
-    ]
+    ],
+    exports: [
+        JwtStrategy,
+        PassportModule,
+    ],
 })
 export class UserModule {}

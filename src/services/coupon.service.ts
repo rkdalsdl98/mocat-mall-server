@@ -10,6 +10,19 @@ import RedisService from "./redis.service";
 import { CouponDto } from "src/dto/coupon.dto";
 
 dotenv.config()
+let defaultDay : string | undefined
+
+switch(process.env.SERVER_SCRIPT) {
+    case "PRODUCT":
+        defaultDay = process.env.COUPON_VALID_DAY
+        break
+    case "TEST":
+    case "DEV":
+        defaultDay = process.env.COUPON_VALID_DAY_DEV
+        break
+    default:
+        throw new Error("정의되지 않은 환경")
+}
 
 @Injectable()
 export class CouponService {
@@ -76,7 +89,6 @@ export class CouponService {
         validAtDay?: number | undefined,
     ) : Coupon<CouponCategory> {
         if(!validAtDay) {
-            const defaultDay = process.env.COUPON_VALID_DAY
             if(!defaultDay) throw new Error("환경 설정을 불러오는데 실패했습니다")
             else if(!defaultDay.match(/^[0-9]$/g)) throw new Error("유효하지 않은 설정 값 입니다")
             validAtDay = parseInt(defaultDay)

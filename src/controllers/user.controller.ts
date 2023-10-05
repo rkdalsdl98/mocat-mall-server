@@ -1,7 +1,9 @@
 import { TypedRoute, TypedQuery, TypedParam } from "@nestia/core";
-import { Controller, UseInterceptors } from "@nestjs/common";
+import { Controller, UseGuards } from "@nestjs/common";
+import { AuthGuard } from "@nestjs/passport";
 import { ApiTags } from "@nestjs/swagger";
-import { MappingInterceptor } from "src/common/interceptors/mapping.interceptor";
+import { GetToken } from "src/common/decorators/jwt.decorator";
+import { ERROR, TryCatch } from "src/common/form/response.form";
 import { UserDto } from "src/dto/user.dto";
 import { IUserQuery } from "src/query/iuser.query";
 import { UserService } from "src/services/user.service";
@@ -27,8 +29,17 @@ export class UserController {
     @TypedRoute.Get()
     async getUsers(
         @TypedQuery() query : IUserQuery
-    ) : Promise<UserDto[] | undefined> {
-        return this.userService.getUsers()
+    ) : Promise<TryCatch<
+    | UserDto[]
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    >> {
+        return {
+            data: await this.userService.getUsers(),
+            statuscode: 200,
+        }
     }
 
     /**
@@ -42,8 +53,19 @@ export class UserController {
     @TypedRoute.Get("/byemail")
     async getUserBy(
         @TypedQuery() query : IUserQuery,
-    ) : Promise<UserDto | null | undefined> {
-        return this.userService.getUserBy({ email: query.email })
+    ) : Promise<TryCatch<
+    | UserDto
+    | null
+    | undefined
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    >> {
+        return {
+            data: await this.userService.getUserBy({ email: query.email }),
+            statuscode: 200,
+        }
     }
 
     /**
@@ -52,7 +74,6 @@ export class UserController {
      * @security bearer
      */
     @TypedRoute.Post()
-    @UseInterceptors(new MappingInterceptor())
     async createUser(
         @TypedQuery() query : IUserQuery.IUserQueryCreateOptions
     ) : Promise<unknown> {

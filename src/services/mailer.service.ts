@@ -6,6 +6,25 @@ import { Injectable } from "@nestjs/common";
 
 dotenv.config()
 
+const port : string | undefined = process.env.PORT
+
+let serverIP : string | undefined
+let authemail: string | undefined
+
+switch(process.env.SERVER_SCRIPT) {
+    case "PRODUCT":
+        serverIP = process.env.SERVER_IP
+        authemail = process.env.AUTH_EMAIL
+        break
+    case "TEST":
+    case "DEV":
+        serverIP = process.env.SERVER_IP_DEV
+        authemail = process.env.AUTH_EMAIL_DEV
+        break
+    default:
+        throw new Error("정의되지 않은 환경")
+}
+
 @Injectable()
 export class EmailService {
     constructor(private readonly mailerService: MailerService) {}
@@ -13,7 +32,7 @@ export class EmailService {
         return `
         <br>
             <form 
-            action="http://${process.env.SERVER_IP}:${process.env.PORT}/user/${to}" 
+            action="http://${serverIP}:${port}/user/${to}" 
             method="post"
             >
                 <p>${secret}</p>
@@ -39,7 +58,7 @@ export class EmailService {
     ) : Promise<SentMessageInfo> {
         let config: ISendMailOptions = {
             to: template.to,
-            from: process.env.AUTH_EMAIL,
+            from: authemail,
             subject: template.title,
         }
         if("secret" in template) {

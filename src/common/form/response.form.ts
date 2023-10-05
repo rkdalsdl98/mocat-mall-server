@@ -1,7 +1,6 @@
-export type ResponseForm<T, M> = {
+export type ResponseForm<T> = {
     readonly statuscode: number
     readonly data: T
-    readonly metadata?: M
 }
 
 export type ResponseFailedForm = {
@@ -19,9 +18,11 @@ export const ERROR: Record<string, ResponseFailedForm> = {
     "RequestTimeOut": { statuscode: 408, message: "서버에 요청시간이 만료 되었습니다." },
     "Conflict": { statuscode: 409, message: "중복된 요청 혹은 연속된 요청으로 해당 요청이 취소 되었습니다." },
     "TooManyRequests": { statuscode: 429, message: "과도한 요청으로 인해 요청이 취소 되었습니다." },
-    "BadGateway": { statuscode: 502, message: "유효한 요청페이지가 아닙니다." }
+    "BadGateway": { statuscode: 502, message: "유효한 요청페이지가 아닙니다." },
+    "ServerDatabaseError": { statuscode: 1000, message: "서버에 상태가 불안정해 정보를 가져올 수 없습니다." },
+    "ServerCacheError": { statuscode: 1001, message: "서버에 상태가 불안정해 정보를 가져올 수 없습니다." },
 }
 
 export type ErrorType = keyof typeof ERROR
 export type ErrorForm = (typeof ERROR)[ErrorType]
-export type TryCatch<T, M, E extends ErrorForm> = ResponseForm<T, M> | E
+export type TryCatch<T, E extends ErrorForm> = ResponseForm<T> | E
