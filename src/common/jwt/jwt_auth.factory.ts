@@ -1,20 +1,21 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
+import { JwtModuleOptions, JwtService } from "@nestjs/jwt";
 import { pbkdf2Sync, randomBytes } from "crypto";
 import { v4 } from "uuid"
 import { ERROR } from "../form/response.form";
 import { IPayload } from "src/interface/jwt/ipayload";
-import * as dotenv from "dotenv"
+import jwtConfig from "jwt.config";
 
-dotenv.config()
-
-// Jwt 관련설정은 수동으로 개발, 배포 환경으로 바꾸어 주어아 함
 @Injectable()
 export class JwtAuthFactory {
+    private config : JwtModuleOptions
+    
     constructor(
         @Inject("JwtService")
         private readonly jwtService: JwtService,
-    ){}
+    ){
+        this.config = jwtConfig()
+    }
 
     encryption(data: string, salt?: string) : { salt: string, hash: string} {
         if(!salt) {
@@ -41,15 +42,15 @@ export class JwtAuthFactory {
 
     async publishToken(payload: Buffer | Object) : Promise<{ accessToken: string }> {
         const accessToken : string = await this.jwtService.signAsync(payload, {
-            secret: process.env.JWT_SECRET_DEV,
-            expiresIn: parseInt(process.env.JWT_EXPIRES_MINUTES_DEV ?? "1") * 60
+            secret: this.config.secret,
+            expiresIn: this.config.signOptions?.expiresIn,
         })
         return { accessToken }
     }
 
     async verify(token: string) : Promise<IPayload> {
         const payload = await this.jwtService.verifyAsync(token, { 
-            secret: process.env.JWT_SECRET_DEV, 
+            secret: this.config.secret,
             ignoreExpiration: true,
         })
         
