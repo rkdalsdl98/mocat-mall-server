@@ -1,5 +1,5 @@
 import { DeliveryEntity } from "src/entity/delivery.entity"
-import { SimpleProductModel } from "src/model/simple_product.model"
+import { SimpleProductDto } from "src/dto/simple_product.dto"
 
 export class DeliveryDto {
     constructor(
@@ -7,7 +7,7 @@ export class DeliveryDto {
         readonly address: string,
         readonly detailAddress: string,
         readonly memo: string,
-        readonly products: SimpleProductModel[],
+        readonly products: SimpleProductDto[],
     ){}
 
     static fromEntity(entity: DeliveryEntity) : DeliveryDto {

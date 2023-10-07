@@ -6,6 +6,7 @@ import { Coupon, CouponCategory } from "src/types/coupon.types";
 import { CouponFindOptions } from "./coupon_findoptions";
 import { CouponCreateOptions } from "./coupon_createoptions";
 import { CouponUpdateOptions } from "./coupon_updateoptiosn";
+import { ERROR } from "src/common/form/response.form";
 
 @Injectable()
 export class CouponRepository extends PrismaClient implements IRepository<CouponEntity>, OnModuleInit, OnModuleDestroy {
@@ -27,7 +28,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         })
         .catch(err => { 
             Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
-            throw err 
+            throw typeof ERROR.ServerDatabaseError 
         }))
         .map(e => {
             return this.toEntity(e)
@@ -44,7 +45,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         })
         .catch(err => {
             Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError
         })
     }
 
@@ -56,7 +57,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         })
         .catch(err => {
             Logger.error(`유저 쿠폰 등록 실패`, err.toString(), CouponRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError
         })
     }
 
@@ -66,7 +67,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
             where: { couponNumber: args.couponnumber }
         }).catch(err => {
             Logger.error(`쿠폰 정보 삭제 실패`, err.toString(), CouponRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError
          })
     }
 
@@ -80,7 +81,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
             }
         }).catch(err => {
             Logger.error(`쿠폰 정보 등록 실패`, err.toString(), CouponRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError
         }))
     }
 

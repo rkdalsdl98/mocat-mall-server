@@ -24,7 +24,8 @@ export class LoggingInterceptor implements NestInterceptor {
         else if("coupon" in query) uniData = query.coupon
         else if ("boardId" in query) uniData = query.boardId
         else if("productId" in query) uniData = query.productId
-        else return of(ERROR.BadRequest)
+        // 테스트를 위해 막아 둠
+        //else return of(ERROR.BadRequest)
 
         if(method === null) return of(ERROR.BadRequest)
         const before = Date.now()

@@ -10,7 +10,7 @@ export default class RedisService {
         private readonly redisClient: Cache,
     ){}
 
-    async get<T>(key : string, path: string) : Promise<T | undefined>{
+    async get<T>(key : string, path: string) : Promise<T | null>{
         return await this.redisClient.get(key)
         .catch(e => {
             Logger.error("레디스 캐시 정보 가져오기 실패", e.toString(), path)

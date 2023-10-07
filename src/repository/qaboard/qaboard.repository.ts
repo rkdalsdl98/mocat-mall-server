@@ -6,6 +6,7 @@ import { QABoardFindOptions } from "./qaboard_findoptions";
 import { ReplyEntity } from "src/entity/reply.entity";
 import { QABoardUpdateOptions } from "./qaboard_updateoptions";
 import { QABoardCreateOptions } from "./qaboard_createoptions";
+import { ERROR } from "src/common/form/response.form";
 
 @Injectable()
 export class QABoardRepository extends PrismaClient implements IRepository<QABoardEntity>, OnModuleInit, OnModuleDestroy {
@@ -25,7 +26,7 @@ export class QABoardRepository extends PrismaClient implements IRepository<QABoa
         return (await this.qaboard.findMany({ include: { reply: true }})
         .catch(err => {
             Logger.error(`게시글 조회 실패`, err.toString(), QABoardRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         }))
         .map(e => this.toEntity(e))
     }
@@ -36,7 +37,7 @@ export class QABoardRepository extends PrismaClient implements IRepository<QABoa
         })
         .catch(err => {
             Logger.error(`게시글 조회 실패`, err.toString(), QABoardRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         })
 
         if(board) this.toEntity(board)
@@ -61,7 +62,7 @@ export class QABoardRepository extends PrismaClient implements IRepository<QABoa
         await this.qaboard.delete({ where: { id: args.boardId } })
         .catch(err => {
             Logger.error(`게시글 삭제 실패`, err.toString(), QABoardRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         })
     }
 

@@ -3,10 +3,9 @@ import {
     ExecutionContext,
 } from "@nestjs/common";
 
-export const GetToken = createParamDecorator((data, context: ExecutionContext) : { email: string, token: string } => {
-    const { user : res, headers } = context.switchToHttp().getRequest()
-    const { email } = res
+export const GetTokenAndPayload = createParamDecorator((data, context: ExecutionContext) : { payload: Object, token: string } => {
+    const { user, headers } = context.switchToHttp().getRequest()
     const [ type, token ] = headers.authorization.split(" ")
     
-    return { email, token }
+    return { payload: user, token }
 })

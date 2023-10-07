@@ -7,14 +7,13 @@ import RedisService from 'src/services/redis.service';
 import { UserService } from 'src/services/user.service';
 import { CouponModule } from './coupon.module';
 import { CouponRepository } from 'src/repository/coupon/coupon.repository';
-import { JwtStrategy } from 'src/common/jwt/jwt_strategy';
-import { JwtService } from "@nestjs/jwt";
-import { PassportModule } from '@nestjs/passport';
+import { AuthModule } from './auth.module';
+import { AuthService } from 'src/services/auth.service';
 
 @Module({
     imports: [
         CouponModule,
-        PassportModule.register({ defaultStrategy: 'jwt' }),
+        AuthModule,
     ],
     controllers: [UserController],
     providers: [
@@ -22,8 +21,7 @@ import { PassportModule } from '@nestjs/passport';
         UserService,
         RedisService,
         CouponService,
-        JwtStrategy,
-        JwtService,
+        AuthService,
         {
             provide: "UserRepository",
             useClass: UserRepository,
@@ -33,9 +31,6 @@ import { PassportModule } from '@nestjs/passport';
             useClass: CouponRepository,
         }
     ],
-    exports: [
-        JwtStrategy,
-        PassportModule,
-    ],
+    exports: [],
 })
 export class UserModule {}

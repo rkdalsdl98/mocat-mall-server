@@ -1,4 +1,4 @@
-export interface SimpleProductModel {
+export interface SimpleProductDto {
     readonly productId: number
     readonly productName: string
     readonly thumbnail: string

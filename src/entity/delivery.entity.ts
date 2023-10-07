@@ -1,4 +1,4 @@
-import { SimpleProductModel } from "src/model/simple_product.model"
+import { SimpleProductDto } from "src/dto/simple_product.dto"
 
 export interface DeliveryEntity {
     readonly id: number
@@ -7,5 +7,5 @@ export interface DeliveryEntity {
     readonly detailAddress: string
     readonly memo: string
     readonly state: string
-    readonly products: SimpleProductModel[] // 상품 아이디 배열
+    readonly products: SimpleProductDto[] // 상품 아이디 배열
 }

@@ -1,9 +1,9 @@
 import { TypedRoute, TypedQuery, TypedParam } from "@nestia/core";
-import { Controller, UseGuards } from "@nestjs/common";
-import { AuthGuard } from "@nestjs/passport";
+import { Body, Controller, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { GetToken } from "src/common/decorators/jwt.decorator";
+import { GetTokenAndPayload } from "src/common/decorators/jwt.decorator";
 import { ERROR, TryCatch } from "src/common/form/response.form";
+import { AuthJwtGuard } from "src/common/guards/auth.guard";
 import { UserDto } from "src/dto/user.dto";
 import { IUserQuery } from "src/query/iuser.query";
 import { UserService } from "src/services/user.service";
@@ -27,32 +27,59 @@ export class UserController {
      * @security bearer
      */
     @TypedRoute.Get()
-    async getUsers(
-        @TypedQuery() query : IUserQuery
-    ) : Promise<TryCatch<
+    async getUsers() : Promise<TryCatch<
     | UserDto[]
+    | null
+    | undefined
     ,
     | typeof ERROR.BadRequest
     | typeof ERROR.ServerCacheError
     | typeof ERROR.ServerDatabaseError
     >> {
+        const result = await this.userService.getUsers()
         return {
-            data: await this.userService.getUsers(),
+            data: result,
             statuscode: 200,
         }
     }
 
     /**
-     * 이메일로 유저 정보 조회
+     * 입력 했던 정보로 유저정보 조회
+     * 
+     * @returns 유저정보
+     */
+    @TypedRoute.Get("/login")
+    async login(
+        @TypedQuery() query : IUserQuery.IUserQueryLoginOptions,
+    ) : Promise<TryCatch<
+    { user: UserDto, accessToken: string }
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    >> {
+        const result = await this.userService.login({ 
+            email: query.email,
+            password: query.password,
+        })
+        return {
+            data: result,
+            statuscode: 200,
+        }
+    }
+
+    /**
+     * 이메일로 유저정보 조회
      * 
      * 이메일은 고유한 값으로 저장됨
      * 
      * @returns 유저정보
      * @security bearer
      */
-    @TypedRoute.Get("/byemail")
-    async getUserBy(
-        @TypedQuery() query : IUserQuery,
+    @TypedRoute.Get("/login/token")
+    @UseGuards(AuthJwtGuard)
+    async loginBy(
+        @GetTokenAndPayload() data: { payload: Object, token: string }
     ) : Promise<TryCatch<
     | UserDto
     | null
@@ -62,27 +89,52 @@ export class UserController {
     | typeof ERROR.ServerCacheError
     | typeof ERROR.ServerDatabaseError
     >> {
+        const result = await this.userService.getUserBy({ email: data.payload['email'] })
         return {
-            data: await this.userService.getUserBy({ email: query.email }),
+            data: result,
             statuscode: 200,
         }
     }
 
     /**
-     * 유저 정보 등록
-     * 
-     * @security bearer
+     * 인증 메일 요청
      */
     @TypedRoute.Post()
+    async receiveCreateReq(
+        @TypedQuery() query : IUserQuery.IUserQueryCreateOptions,
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    >> {
+        const result = await this.userService.createRequest({ ...query })
+        return {
+            data: result,
+            statuscode: 201,
+        }
+    }
+
+    /**
+     * 유저 정보 등록
+     */
+    @TypedRoute.Post("/:email")
     async createUser(
-        @TypedQuery() query : IUserQuery.IUserQueryCreateOptions
-    ) : Promise<unknown> {
-        return this.userService.createUser({
-            name: query.name,
-            password: query.password,
-            email: query.email,
-            address: query.address,
-        })
+        @TypedParam("email") email: string,
+        @Body() body : { code: string & tags.MaxLength<6> },
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    | typeof ERROR.NotFoundData
+    >> {
+        const result = await this.userService.createUser(body.code, { email })
+        return {
+            data: result,
+            statuscode: 201,
+        }
     }
 
     /**

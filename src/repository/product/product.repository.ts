@@ -6,6 +6,7 @@ import { IRepository } from "src/interface/respository/irepository";
 import { ProductFindOptions } from "./product_findoptions";
 import { ProductUpdateOptions } from "./product_updateoptions";
 import { ProductCreateOptions } from "./product_createoptions";
+import { ERROR } from "src/common/form/response.form";
 
 @Injectable()
 export class ProductRepository extends PrismaClient implements IRepository<ProductEntity>, OnModuleInit, OnModuleDestroy {
@@ -25,7 +26,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         return (await this.product.findMany({ include: { productDetail: true }})
         .catch(err => {
             Logger.error(`상품 조회 실패`, err.toString(), ProductRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         }))
         .map(e => this.toEntity(e))
     }
@@ -37,7 +38,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         })
         .catch(err => {
             Logger.error(`상품 조회 실패`, err.toString(), ProductRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         }))
     }
 
@@ -63,12 +64,16 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         })
         .catch(err => {
             Logger.error(`상품 갱신 실패`, err.toString(), ProductRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         }))
     }
 
     async deleteBy(args: ProductFindOptions): Promise<void> {
         await this.product.delete({ where: { id: args.productId } })
+        .catch(err => {
+            Logger.error(`상품 삭제 실패`, err.toString(), ProductRepository.name)
+            throw typeof ERROR.ServerDatabaseError 
+        })
     }
 
     async create(data: ProductCreateOptions, args?: unknown): Promise<ProductEntity> {
@@ -89,7 +94,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         })
         .catch(err => {
             Logger.error(`상품 등록 실패`, err.toString(), ProductRepository.name) 
-            throw err
+            throw typeof ERROR.ServerDatabaseError 
         }))
     }
 

@@ -1,7 +1,7 @@
 import { OnModuleDestroy, OnModuleInit, Logger, Injectable } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 import { UserEntity } from "src/entity/user.entity";
-import { SimpleProductModel } from "src/model/simple_product.model";
+import { SimpleProductDto } from "src/dto/simple_product.dto";
 import { UserFindOptions } from "./user_findoptions";
 import { UserUpdateOptions } from "./user_updateoptions";
 import { IRepository } from "src/interface/respository/irepository";
@@ -28,7 +28,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
     async get(args?: UserFindOptions): Promise<UserEntity[]> {
         return (await this.user.findMany({
             include: {
-                qaboards: true,
                 orders: true,
             },
             where: {
@@ -48,7 +47,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
     async getBy(args: UserFindOptions): Promise<UserEntity | null | undefined> {
         const user = await this.user.findUnique({
             include: {
-                qaboards: true,
                 orders: true,
             },
             where: {
@@ -74,11 +72,10 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                 email: args.email,
             },
             data: {
-                name: data.name,
+                username: data.name,
                 address: data.address,
             },
             include: {
-                qaboards: true,
                 orders: true,
             }
         })
@@ -104,14 +101,13 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
     async create(data: UserCreateOptions, salt: string): Promise<UserEntity> {
         const user = await this.user.create({
             data: {
-                email: data.email!,
-                password: data.password!,
-                address: data.address!,
+                email: data.email,
+                password: data.password,
+                address: data.address,
                 salt: salt,
-                name: data.name!,
+                username: data.name,
             },
             include: {
-                qaboards: true,
                 orders: true,
             }
         })
@@ -129,7 +125,6 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                 coupons: { push: coupon }
             },
             include: {
-                qaboards: true,
                 orders: true,
             }
         })
@@ -145,6 +140,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
             id: v.id,
             email: v.email,
             password: v.password,
+            username: v.username,
             salt: v.salt,
             orders: [...Object.keys(v.orders)].map(key => {
                 var item = v.orders[key]
@@ -168,7 +164,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                                         thumbnail: product['thumbnail'],
                                         counts: product['counts'],
                                         price: product['price'],
-                                    } as SimpleProductModel
+                                    } as SimpleProductDto
                                 }
                             })
                         } as DeliveryEntity,
@@ -200,7 +196,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                         price: item['price'],
                         thumbnail: item['thumbnail'],
                         counts: item['counts']
-                    } as SimpleProductModel
+                    } as SimpleProductDto
                 }
             }),
             createdAt: v.createdAt,

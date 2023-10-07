@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import { MailTemplate } from "src/types/mail_template.types";
 import { SentMessageInfo } from 'nodemailer';
 import { Injectable } from "@nestjs/common";
+import RedisService from "./redis.service";
 
 dotenv.config()
 
@@ -27,25 +28,15 @@ switch(process.env.SERVER_SCRIPT) {
 
 @Injectable()
 export class EmailService {
-    constructor(private readonly mailerService: MailerService) {}
-    private _authorizationTemplate(to: string, secret: string) : string {
+    constructor(
+        private readonly mailerService: MailerService,
+    ) {}
+
+    private _authorizationTemplate(secret: string) : string {
         return `
         <br>
-            <form 
-            action="http://${serverIP}:${port}/user/${to}" 
-            method="post"
-            >
-                <p>${secret}</p>
-                <p>상단에 보이는 숫자를 어플화면에서 입력하고 확인을 눌러주세요.</p>
-                <input
-                type="text" 
-                name="code"
-                />
-                <input
-                type="submit"
-                value="보내기"
-                />
-            </form>
+            <h2>${secret}</h2>
+            <p>상단에 보이는 숫자를 어플화면에서 입력하고 확인을 눌러주세요.</p>
         </br>
     `
     }
@@ -54,7 +45,7 @@ export class EmailService {
     }  
 
     async sendMail(
-        template: MailTemplate, 
+        template: MailTemplate,
     ) : Promise<SentMessageInfo> {
         let config: ISendMailOptions = {
             to: template.to,
@@ -62,7 +53,7 @@ export class EmailService {
             subject: template.title,
         }
         if("secret" in template) {
-            config.html = this._authorizationTemplate(template.to, template.secret)
+            config.html = this._authorizationTemplate(template.secret)
         } else {
             config.html = this._defaultTemplate(template.message)
         }

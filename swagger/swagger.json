@@ -644,10 +644,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/UserDto"
-                  }
+                  "$ref": "#/components/schemas/TryCatch_lt_Array_lt_UserDto_gt__comma__space_ResponseFailedForm_gt_"
                 }
               }
             },
@@ -796,7 +793,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/UserDto.Nullable"
+                  "$ref": "#/components/schemas/TryCatch_lt_UserDto_space__or__space_null_space__or__space_undefined_comma__space_ResponseFailedForm_gt_"
                 }
               }
             },
@@ -1653,6 +1650,61 @@
         "nullable": false,
         "x-typia-jsDocTags": []
       },
+      "TryCatch_lt_Array_lt_UserDto_gt__comma__space_ResponseFailedForm_gt_": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ResponseFailedForm"
+          },
+          {
+            "$ref": "#/components/schemas/ResponseForm_lt_Array_lt_UserDto_gt__gt_"
+          }
+        ]
+      },
+      "ResponseFailedForm": {
+        "type": "object",
+        "properties": {
+          "statuscode": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "message": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "string"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "statuscode",
+          "message"
+        ],
+        "x-typia-jsDocTags": []
+      },
+      "ResponseForm_lt_Array_lt_UserDto_gt__gt_": {
+        "type": "object",
+        "properties": {
+          "statuscode": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "data": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserDto"
+            }
+          }
+        },
+        "nullable": false,
+        "required": [
+          "statuscode",
+          "data"
+        ],
+        "x-typia-jsDocTags": []
+      },
       "UserDto": {
         "type": "object",
         "properties": {
@@ -1695,7 +1747,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SimpleProductModel"
+              "$ref": "#/components/schemas/SimpleProductDto"
             }
           },
           "createdAt": {
@@ -1770,7 +1822,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SimpleProductModel"
+              "$ref": "#/components/schemas/SimpleProductDto"
             }
           }
         },
@@ -1784,7 +1836,7 @@
         ],
         "x-typia-jsDocTags": []
       },
-      "SimpleProductModel": {
+      "SimpleProductDto": {
         "type": "object",
         "properties": {
           "productId": {
@@ -1863,6 +1915,34 @@
         ],
         "x-typia-jsDocTags": []
       },
+      "TryCatch_lt_UserDto_space__or__space_null_space__or__space_undefined_comma__space_ResponseFailedForm_gt_": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ResponseFailedForm"
+          },
+          {
+            "$ref": "#/components/schemas/ResponseForm_lt_UserDto_space__or__space_null_space__or__space_undefined_gt_"
+          }
+        ]
+      },
+      "ResponseForm_lt_UserDto_space__or__space_null_space__or__space_undefined_gt_": {
+        "type": "object",
+        "properties": {
+          "statuscode": {
+            "x-typia-required": true,
+            "x-typia-optional": false,
+            "type": "number"
+          },
+          "data": {
+            "$ref": "#/components/schemas/UserDto.Nullable"
+          }
+        },
+        "nullable": false,
+        "required": [
+          "statuscode"
+        ],
+        "x-typia-jsDocTags": []
+      },
       "UserDto.Nullable": {
         "type": "object",
         "properties": {
@@ -1905,7 +1985,7 @@
             "x-typia-optional": false,
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/SimpleProductModel"
+              "$ref": "#/components/schemas/SimpleProductDto"
             }
           },
           "createdAt": {
@@ -2133,7 +2213,7 @@
         "in": "header",
         "name": "Authorization"
       },
-      "custom": {
+      "mocat": {
         "type": "apiKey",
         "in": "header",
         "name": "Authorization"
