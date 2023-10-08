@@ -20,12 +20,10 @@ export class LoggingInterceptor implements NestInterceptor {
         const query : IOptionsQuery = req.query
 
         let uniData
-        if("email" in query) uniData = query.email
-        else if("coupon" in query) uniData = query.coupon
-        else if ("boardId" in query) uniData = query.boardId
-        else if("productId" in query) uniData = query.productId
-        // 테스트를 위해 막아 둠
-        //else return of(ERROR.BadRequest)
+        if("coupon" in query) uniData = `쿠폰 ${query.coupon}`
+        else if ("boardId" in query) uniData = `게시글 ${query.boardId}`
+        else if("productId" in query) uniData = `상품 ${query.productId}`
+        else uniData = ""
 
         if(method === null) return of(ERROR.BadRequest)
         const before = Date.now()

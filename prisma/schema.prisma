@@ -96,10 +96,8 @@ model delivery {
 
 model admin {
   uuid String @unique
-  key String
-  iv String
   salt String
-  pass String
+  code String
   user user? @relation("Admin", fields: [userEmail], references: [email], onDelete: Cascade)
   userEmail String @unique
 }

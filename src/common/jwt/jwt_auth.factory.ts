@@ -14,11 +14,13 @@ export class JwtAuthFactory {
         private readonly jwtService: JwtService,
     ){
         this.configs = jwtConfig()
+        console.log(v4())
+        console.log(v4())
     }
 
     encryption(data: string, salt?: string) : { salt: string, hash: string} {
         if(!salt) {
-            const randByteStr = randomBytes(32).toString('base64')
+            const randByteStr = randomBytes(32).toString(this.configs.dependenciesConfig['encoding'] as BufferEncoding ?? "base64")
             const uid = v4()
             salt = `${uid}:${randByteStr}`
         }
@@ -30,13 +32,13 @@ export class JwtAuthFactory {
             parseInt(this.configs.dependenciesConfig['createIterations'] ?? "200216"), 
             64, 
             this.configs.dependenciesConfig['algorithm'],
-        ).toString('base64')
+        ).toString(this.configs.dependenciesConfig['encoding'] as BufferEncoding ?? "base64")
         
         return { salt, hash }
     }
 
-    generateRandStr(byteLen?: number,) : string {
-        return randomBytes(byteLen ?? 6).toString(this.configs.dependenciesConfig['encoding'])
+    generateRandStr(byteLen?: number) : string {
+        return randomBytes(byteLen ?? 6).toString(this.configs.dependenciesConfig['encoding'] as BufferEncoding ?? "base64")
     }
 
     async publishToken(payload: Buffer | Object) : Promise<{ accessToken: string }> {
