@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtAuthFactory } from "src/common/jwt/jwt_auth.factory";
 import { IPayload } from "src/interface/jwt/ipayload";
 import { UserEntity } from "src/entity/user.entity";
+import { ERROR } from "src/common/form/response.form";
 
 @Injectable()
 export class AuthService {
@@ -28,8 +29,8 @@ export class AuthService {
         return hash === compareHash
     }
 
-    async verifyToken(token: string) : Promise<IPayload> {
-        const payload : IPayload = await this.jwtAuthFactory.verify(token)
+    async verifyToken(token: string) : Promise<IPayload | typeof ERROR.ExpiredToken> {
+        const payload = await this.jwtAuthFactory.verify(token)
         return payload
     }
 

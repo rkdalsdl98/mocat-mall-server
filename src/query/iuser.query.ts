@@ -3,15 +3,12 @@ import { IOptionsQuery } from "./ioptions.query"
 
 export interface IUserQuery extends IOptionsQuery {}
 export namespace IUserQuery {
-    export interface IUserQueryFindOptions extends IUserQuery {
+    export interface IUserQueryLoginOptions extends IUserQuery {
         readonly email: string & tags.Format<"email">
-    }
-
-    export interface IUserQueryLoginOptions extends IUserQuery.IUserQueryFindOptions {
         readonly password: string & tags.MinLength<9> & tags.MaxLength<20>
     }
 
-    export interface IUserQueryUpdateOptions extends IUserQueryFindOptions {
+    export interface IUserQueryUpdateOptions extends IOptionsQuery {
         readonly address?: string & tags.MaxLength<50>
         readonly name?: string & tags.MaxLength<10>
     }
@@ -23,7 +20,7 @@ export namespace IUserQuery {
         readonly name: string & tags.MaxLength<10>
     }
 
-    export interface IUserQueryQABoardOptions extends IUserQueryFindOptions {
+    export interface IUserQueryQABoardOptions extends IOptionsQuery {
         readonly title?: string & tags.MaxLength<20>
         readonly contentText?: string & tags.MaxLength<200>
         readonly productId?: number & tags.Type<"uint32">
@@ -38,12 +35,12 @@ export namespace IUserQuery {
         readonly boardId?: number & tags.Type<"uint32">
     }
 
-    export interface IUserQueryUpdateOrderOptions extends IUserQueryFindOptions {
+    export interface IUserQueryUpdateOrderOptions extends IOptionsQuery {
         readonly orderId?: string & tags.MaxLength<60>
         readonly paymentKey?: string & tags.MaxLength<50>
     }
 
-    export interface IUserQueryConnectCouponOptions extends IUserQueryFindOptions {
+    export interface IUserQueryConnectCouponOptions extends IOptionsQuery {
        readonly coupon: string & tags.MinLength<37> & tags.MaxLength<39>
     }
 }

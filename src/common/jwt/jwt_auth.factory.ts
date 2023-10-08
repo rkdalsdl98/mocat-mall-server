@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtModuleOptions, JwtService } from "@nestjs/jwt";
 import { pbkdf2Sync, randomBytes } from "crypto";
 import { v4 } from "uuid"
@@ -8,13 +8,12 @@ import jwtConfig from "jwt.config";
 
 @Injectable()
 export class JwtAuthFactory {
-    private config : JwtModuleOptions
+    private configs : { config: JwtModuleOptions, dependenciesConfig: Object }
     
     constructor(
-        @Inject("JwtService")
         private readonly jwtService: JwtService,
     ){
-        this.config = jwtConfig()
+        this.configs = jwtConfig()
     }
 
     encryption(data: string, salt?: string) : { salt: string, hash: string} {
@@ -28,29 +27,29 @@ export class JwtAuthFactory {
         const hash = pbkdf2Sync(
             buffer, 
             salt, 
-            parseInt(process.env.JWT_CREATE_ITERATIONS ?? "200216"), 
+            parseInt(this.configs.dependenciesConfig['createIterations'] ?? "200216"), 
             64, 
-            'sha256',
+            this.configs.dependenciesConfig['algorithm'],
         ).toString('base64')
         
         return { salt, hash }
     }
 
     generateRandStr(byteLen?: number,) : string {
-        return randomBytes(byteLen ?? 6).toString("base64")
+        return randomBytes(byteLen ?? 6).toString(this.configs.dependenciesConfig['encoding'])
     }
 
     async publishToken(payload: Buffer | Object) : Promise<{ accessToken: string }> {
         const accessToken : string = await this.jwtService.signAsync(payload, {
-            secret: this.config.secret,
-            expiresIn: this.config.signOptions?.expiresIn,
+            secret: this.configs.config.secret,
+            expiresIn: this.configs.config.signOptions?.expiresIn,
         })
         return { accessToken }
     }
 
-    async verify(token: string) : Promise<IPayload> {
+    async verify(token: string) : Promise<IPayload | typeof ERROR.ExpiredToken> {
         const payload = await this.jwtService.verifyAsync(token, { 
-            secret: this.config.secret,
+            secret: this.configs.config.secret,
             ignoreExpiration: true,
         })
         
@@ -58,7 +57,7 @@ export class JwtAuthFactory {
         const now = Date.now() / 1000
         
         // Refresh를 구현하지 않아 만료된 토큰은 바로 오류처리
-        if(!exp || now > exp) throw ERROR.ExpiredToken
+        if(!exp || now > exp) return ERROR.ExpiredToken
         return payload
     }
 }

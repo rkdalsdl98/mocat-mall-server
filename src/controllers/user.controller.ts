@@ -57,15 +57,13 @@ export class UserController {
     | typeof ERROR.BadRequest
     | typeof ERROR.ServerCacheError
     | typeof ERROR.ServerDatabaseError
+    | typeof ERROR.NonAuthoritativeInformation
+    | typeof ERROR.NotFoundData
     >> {
-        const result = await this.userService.login({ 
+        return await this.userService.login({ 
             email: query.email,
             password: query.password,
         })
-        return {
-            data: result,
-            statuscode: 200,
-        }
     }
 
     /**
@@ -78,7 +76,7 @@ export class UserController {
      */
     @TypedRoute.Get("/login/token")
     @UseGuards(AuthJwtGuard)
-    async loginBy(
+    async loginByToken(
         @GetTokenAndPayload() data: { payload: Object, token: string }
     ) : Promise<TryCatch<
     | UserDto
@@ -89,11 +87,7 @@ export class UserController {
     | typeof ERROR.ServerCacheError
     | typeof ERROR.ServerDatabaseError
     >> {
-        const result = await this.userService.getUserBy({ email: data.payload['email'] })
-        return {
-            data: result,
-            statuscode: 200,
-        }
+        return await this.userService.getUserBy({ email: data.payload['email'] })
     }
 
     /**
@@ -107,12 +101,9 @@ export class UserController {
     ,
     | typeof ERROR.BadRequest
     | typeof ERROR.ServerCacheError
+    | typeof ERROR.FailedSendMail
     >> {
-        const result = await this.userService.createRequest({ ...query })
-        return {
-            data: result,
-            statuscode: 201,
-        }
+        return await this.userService.createRequest({ ...query })
     }
 
     /**
@@ -130,11 +121,7 @@ export class UserController {
     | typeof ERROR.ServerDatabaseError
     | typeof ERROR.NotFoundData
     >> {
-        const result = await this.userService.createUser(body.code, { email })
-        return {
-            data: result,
-            statuscode: 201,
-        }
+        return await this.userService.createUser(body.code, { email })
     }
 
     /**
@@ -143,10 +130,19 @@ export class UserController {
      * @security bearer
      */
     @TypedRoute.Patch("coupon/connect")
+    @UseGuards(AuthJwtGuard)
     async connectCoupon(
-        @TypedQuery() query : IUserQuery.IUserQueryConnectCouponOptions
-    ) : Promise<unknown> {
-        return this.userService.connectCoupon(query.coupon, { email: query.email })
+        @TypedQuery() query : IUserQuery.IUserQueryConnectCouponOptions,
+        @GetTokenAndPayload() data: { payload: Object, token: string },
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    | typeof ERROR.NotFoundData
+    >> {
+        return await this.userService.connectCoupon(query.coupon, { email: data.payload['email'] })
     }
 
     /**
@@ -155,13 +151,22 @@ export class UserController {
      * @security bearer
      */
     @TypedRoute.Patch()
+    @UseGuards(AuthJwtGuard)
     async updateUser(
-        @TypedQuery() query : IUserQuery.IUserQueryUpdateOptions
-    ) {
+        @TypedQuery() query : IUserQuery.IUserQueryUpdateOptions,
+        @GetTokenAndPayload() data: { payload: Object, token: string },
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    | typeof ERROR.NotFoundData
+    >> {
         return await this.userService.updateUser({
             name: query.name,
             address: query.address,
-        },{ email: query.email })
+        },{ email: data.payload['email'] })
     }
 
     /**
@@ -169,10 +174,18 @@ export class UserController {
      * 
      * @security bearer
      */
-    @TypedRoute.Delete("/:email")
+    @TypedRoute.Delete()
+    @UseGuards(AuthJwtGuard)
     async deleteUser(
-        @TypedParam("email") email: string & tags.Format<"email">
-    ) : Promise<void> {
-        return await this.userService.deleteUser({email})
+        @GetTokenAndPayload() data: { payload: Object, token: string },
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    | typeof ERROR.BadRequest
+    | typeof ERROR.ServerCacheError
+    | typeof ERROR.ServerDatabaseError
+    | typeof ERROR.NotFoundData
+    >> {
+        return await this.userService.deleteUser({ email: data.payload['email'] })
     }
 }

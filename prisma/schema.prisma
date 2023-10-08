@@ -23,7 +23,7 @@ model user {
   qaboards Json[]
   baskets Json[] // 상품의 아이디와 간단한 정보를 담은 객체를 Json 형태로 저장
   createdAt DateTime @default(now())
-  isAdmin Boolean @default(false)
+  admin admin? @relation("Admin")
 }
 
 model coupon {
@@ -92,4 +92,14 @@ model delivery {
   memo String
   state String
   productId Int[]
+}
+
+model admin {
+  uuid String @unique
+  key String
+  iv String
+  salt String
+  pass String
+  user user? @relation("Admin", fields: [userEmail], references: [email], onDelete: Cascade)
+  userEmail String @unique
 }

@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from "@nestjs/common";
 import { Request } from 'express';
-import { ERROR } from "../form/response.form";
 import { AuthService } from "src/services/auth.service";
+import { ERROR } from "../form/response.form";
 
 @Injectable()
 export class AuthJwtGuard implements CanActivate {
@@ -15,7 +15,9 @@ export class AuthJwtGuard implements CanActivate {
         const token = this.extractTokenFromHeader(req)
         if(!token) return false
         const res = await this.authService.verifyToken(token)
-        if("email" in res) {
+        if("statuscode" in res) {
+            return false
+        } else if("email" in res) {
             const { email } = res
             if(!email || !/^[0-9a-zA-Z]+@[a-zA-Z]+.[a-zA-Z]{2,3}$/g.test(`${email}`)) {
                 Logger.error(`[이메일 형식이 아님] 요청 아이피: ${reqAddress}`, AuthJwtGuard.name)
@@ -29,9 +31,9 @@ export class AuthJwtGuard implements CanActivate {
         }
     }
 
-    private extractTokenFromHeader(request: Request): string | undefined {
+    private extractTokenFromHeader(request: Request): string | null {
         const [ type, token ] = request.headers.authorization?.split(" ") ?? []
-        if(!type || type !== "Bearer") throw undefined
+        if(!type || type !== "Bearer") return null
         return token
     }
 }
