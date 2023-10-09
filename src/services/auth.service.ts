@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtAuthFactory } from "src/common/jwt/jwt_auth.factory";
 import { IPayload } from "src/interface/jwt/ipayload";
 import { UserEntity } from "src/entity/user.entity";
-import { ERROR } from "src/common/form/response.form";
+import { ResponseFailedForm } from "src/common/form/response.form";
 import { 
     publishAdminAuthority,
     publicVerify,
@@ -35,9 +35,7 @@ export class AuthService {
 
     async verifyToken(token: string) : Promise<
     IPayload
-    | never
-    | typeof ERROR.ExpiredToken
-    | typeof ERROR.UnAuthorized
+    | { type: string, response: ResponseFailedForm }
     > {
         const result = await this.jwtAuthFactory.verify(token)
         if("payload" in result) {
@@ -49,12 +47,9 @@ export class AuthService {
                     result.payload['authority'] = authVerify.authority
                     result.payload['code'] = authVerify.code
                     return result.payload as IPayload.IPayloadEmployee
-                } else authVerify
+                } else return authVerify
             } else return result.payload
         } else return result
-
-        // never
-        return result.payload
     }
 
     async publishToken(user: UserEntity) : Promise<{ accessToken: string }> {

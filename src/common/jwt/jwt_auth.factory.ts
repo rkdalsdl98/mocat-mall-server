@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtModuleOptions, JwtService } from "@nestjs/jwt";
 import { pbkdf2Sync, randomBytes } from "crypto";
 import { v4 } from "uuid"
-import { ERROR } from "../form/response.form";
+import { ERROR, ResponseFailedForm } from "../form/response.form";
 import { IPayload } from "src/interface/jwt/ipayload";
 import jwtConfig from "jwt.config";
 
@@ -47,7 +47,7 @@ export class JwtAuthFactory {
         return { accessToken }
     }
 
-    async verify(token: string) : Promise<{ payload: IPayload } | typeof ERROR.ExpiredToken> {
+    async verify(token: string) : Promise<{ payload: IPayload } | { type: string, response: ResponseFailedForm }> {
         const payload = await this.jwtService.verifyAsync(token, { 
             secret: this.configs.config.secret,
             ignoreExpiration: true,
@@ -57,7 +57,7 @@ export class JwtAuthFactory {
         const now = Date.now() / 1000
         
         // Refresh를 구현하지 않아 만료된 토큰은 바로 오류처리
-        if(!exp || now > exp) return ERROR.ExpiredToken
+        if(!exp || now > exp) return { type: "ExpiredToken", response: ERROR.ExpiredToken }
         return payload
     }
 }

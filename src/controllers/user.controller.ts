@@ -1,8 +1,8 @@
 import { TypedRoute, TypedQuery, TypedParam } from "@nestia/core";
 import { Body, Controller, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
-import { GetTokenAndPayload } from "src/common/decorators/jwt.decorator";
-import { ERROR, TryCatch } from "src/common/form/response.form";
+import { JwtDecorator } from "src/common/decorators/jwt.decorator";
+import { ERROR, ResponseFailedForm, TryCatch } from "src/common/form/response.form";
 import { AuthJwtGuard } from "src/common/guards/auth.guard";
 import { UserDto } from "src/dto/user.dto";
 import { IUserQuery } from "src/query/iuser.query";
@@ -77,16 +77,17 @@ export class UserController {
     @TypedRoute.Get("/login/token")
     @UseGuards(AuthJwtGuard)
     async loginByToken(
-        @GetTokenAndPayload() data: { payload: Object, token: string }
+        @JwtDecorator.GetTokenAndPayload() data: { payload: Object, token: string }
     ) : Promise<TryCatch<
     | UserDto
     | null
     | undefined
     ,
-    | typeof ERROR.BadRequest
-    | typeof ERROR.ServerCacheError
-    | typeof ERROR.ServerDatabaseError
+    ResponseFailedForm
     >> {
+        if("type" in data.payload && "response" in data.payload) 
+            return data.payload.response as ResponseFailedForm
+
         return await this.userService.getUserBy({ email: data.payload['email'] })
     }
 
@@ -133,15 +134,15 @@ export class UserController {
     @UseGuards(AuthJwtGuard)
     async connectCoupon(
         @TypedQuery() query : IUserQuery.IUserQueryConnectCouponOptions,
-        @GetTokenAndPayload() data: { payload: Object, token: string },
+        @JwtDecorator.GetTokenAndPayload() data: { payload: Object, token: string },
     ) : Promise<TryCatch<
     boolean
     ,
-    | typeof ERROR.BadRequest
-    | typeof ERROR.ServerCacheError
-    | typeof ERROR.ServerDatabaseError
-    | typeof ERROR.NotFoundData
+    ResponseFailedForm
     >> {
+        if("type" in data.payload && "response" in data.payload) 
+            return data.payload.response as ResponseFailedForm
+
         return await this.userService.connectCoupon(query.coupon, { email: data.payload['email'] })
     }
 
@@ -154,15 +155,15 @@ export class UserController {
     @UseGuards(AuthJwtGuard)
     async updateUser(
         @TypedQuery() query : IUserQuery.IUserQueryUpdateOptions,
-        @GetTokenAndPayload() data: { payload: Object, token: string },
+        @JwtDecorator.GetTokenAndPayload() data: { payload: Object, token: string },
     ) : Promise<TryCatch<
     boolean
-    ,
-    | typeof ERROR.BadRequest
-    | typeof ERROR.ServerCacheError
-    | typeof ERROR.ServerDatabaseError
-    | typeof ERROR.NotFoundData
+    , 
+    ResponseFailedForm
     >> {
+        if("type" in data.payload && "response" in data.payload) 
+            return data.payload.response as ResponseFailedForm
+
         return await this.userService.updateUser({
             name: query.name,
             address: query.address,
@@ -177,15 +178,15 @@ export class UserController {
     @TypedRoute.Delete()
     @UseGuards(AuthJwtGuard)
     async deleteUser(
-        @GetTokenAndPayload() data: { payload: Object, token: string },
+        @JwtDecorator.GetTokenAndPayload() data: { payload: Object, token: string },
     ) : Promise<TryCatch<
     boolean
     ,
-    | typeof ERROR.BadRequest
-    | typeof ERROR.ServerCacheError
-    | typeof ERROR.ServerDatabaseError
-    | typeof ERROR.NotFoundData
+    ResponseFailedForm
     >> {
+        if("type" in data.payload && "response" in data.payload) 
+            return data.payload.response as ResponseFailedForm
+        
         return await this.userService.deleteUser({ email: data.payload['email'] })
     }
 }

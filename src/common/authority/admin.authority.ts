@@ -6,7 +6,7 @@ import {
 } from "crypto";
 import { v4 } from "uuid"
 import { authorityConfig } from "authority.config";
-import { ERROR, TryCatch } from "../form/response.form";
+import { ERROR, ResponseFailedForm } from "../form/response.form";
 
 const config = authorityConfig()
 export type AuthorityType = "employee" | "leader" | "chief" | "none"
@@ -50,13 +50,12 @@ export const publishAdminAuthority = (
 export const publicVerify = (authoritycode: string)
 :
 { result: boolean, authority: AuthorityType, code: string }
-| typeof ERROR.ServiceUnavailableException
-| typeof ERROR.UnAuthorized=> {
+| { type: string, response: ResponseFailedForm }=> {
     const key = config.authorityKey
     const iv = config.authorityIv
     if(key ===  undefined || iv === undefined) {
         console.log(`[설정누락] 권한 관련 설정이 누락 되었습니다.`)
-        return ERROR.ServiceUnavailableException
+        return { type: "ServiceUnavailableException", response: ERROR.ServiceUnavailableException }
     }
 
     const decipher = createDecipheriv(
@@ -72,7 +71,7 @@ export const publicVerify = (authoritycode: string)
     )
     decode += decipher.final(config.encoding as BufferEncoding ?? "base64")
     const [ authority, code ] = decode.split(":")
-    if(!authority || !code) return ERROR.UnAuthorized
+    if(!authority || !code) return { type: "UnAuthorized", response: ERROR.UnAuthorized }
 
     switch(authority) {
         case "employee":
@@ -81,7 +80,7 @@ export const publicVerify = (authoritycode: string)
         case "none":
             return { result: true, authority, code }
         default:
-            return ERROR.UnAuthorized
+            return { type: "UnAuthorized", response: ERROR.UnAuthorized }
     }
 }
 export const privateVerify = (
