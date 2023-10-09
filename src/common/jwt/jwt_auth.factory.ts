@@ -14,8 +14,6 @@ export class JwtAuthFactory {
         private readonly jwtService: JwtService,
     ){
         this.configs = jwtConfig()
-        console.log(v4())
-        console.log(v4())
     }
 
     encryption(data: string, salt?: string) : { salt: string, hash: string} {
@@ -49,7 +47,7 @@ export class JwtAuthFactory {
         return { accessToken }
     }
 
-    async verify(token: string) : Promise<IPayload | typeof ERROR.ExpiredToken> {
+    async verify(token: string) : Promise<{ payload: IPayload } | typeof ERROR.ExpiredToken> {
         const payload = await this.jwtService.verifyAsync(token, { 
             secret: this.configs.config.secret,
             ignoreExpiration: true,

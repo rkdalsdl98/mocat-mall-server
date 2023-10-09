@@ -3,6 +3,10 @@ import { JwtAuthFactory } from "src/common/jwt/jwt_auth.factory";
 import { IPayload } from "src/interface/jwt/ipayload";
 import { UserEntity } from "src/entity/user.entity";
 import { ERROR } from "src/common/form/response.form";
+import { 
+    publishAdminAuthority,
+    publicVerify,
+} from "src/common/authority/admin.authority";
 
 @Injectable()
 export class AuthService {
@@ -29,12 +33,37 @@ export class AuthService {
         return hash === compareHash
     }
 
-    async verifyToken(token: string) : Promise<IPayload | typeof ERROR.ExpiredToken> {
-        const payload = await this.jwtAuthFactory.verify(token)
-        return payload
+    async verifyToken(token: string) : Promise<
+    IPayload
+    | never
+    | typeof ERROR.ExpiredToken
+    | typeof ERROR.UnAuthorized
+    > {
+        const result = await this.jwtAuthFactory.verify(token)
+        if("payload" in result) {
+            if("code" in result.payload) {
+                const { code } = result.payload as IPayload.IPayloadEmployee
+                if(code === undefined) return result.payload
+                const authVerify = publicVerify(code)
+                if("authority" in authVerify) {
+                    result.payload['authority'] = authVerify.authority
+                    result.payload['code'] = authVerify.code
+                    return result.payload as IPayload.IPayloadEmployee
+                } else authVerify
+            } else return result.payload
+        } else return result
+
+        // never
+        return result.payload
     }
 
-    async publishToken(payload: Buffer | Object) : Promise<{ accessToken: string }> {
-        return this.jwtAuthFactory.publishToken(payload)
+    async publishToken(user: UserEntity) : Promise<{ accessToken: string }> {
+        const { authority: userAuth } = user
+        if(userAuth === null) return this.jwtAuthFactory.publishToken({ email: user.email })
+        else {
+            const result = publishAdminAuthority(userAuth.type, userAuth.code)
+            if(result === null) return this.jwtAuthFactory.publishToken({ email: user.email })
+            else return this.jwtAuthFactory.publishToken({ email: user.email, code: result.authoritycode })
+        }
     }
 }

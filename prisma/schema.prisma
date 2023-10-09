@@ -23,7 +23,7 @@ model user {
   qaboards Json[]
   baskets Json[] // 상품의 아이디와 간단한 정보를 담은 객체를 Json 형태로 저장
   createdAt DateTime @default(now())
-  admin admin? @relation("Admin")
+  authority authority? @relation("Authority")
 }
 
 model coupon {
@@ -94,10 +94,12 @@ model delivery {
   productId Int[]
 }
 
-model admin {
+model authority {
   uuid String @unique
   salt String
   code String
-  user user? @relation("Admin", fields: [userEmail], references: [email], onDelete: Cascade)
+  type String // 권한 타입 "employee" | "leader" | "chief" 없다면 "none"으로 표기 해서 리턴
+  createdAt DateTime @default(now())
+  user user? @relation("Authority", fields: [userEmail], references: [email], onDelete: Cascade)
   userEmail String @unique
 }

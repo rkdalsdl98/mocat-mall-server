@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable, Logger } from "@nestjs/common";
 import { Request } from 'express';
 import { AuthService } from "src/services/auth.service";
-import { ERROR } from "../form/response.form";
+import { IPayload } from "src/interface/jwt/ipayload";
 
 @Injectable()
 export class AuthJwtGuard implements CanActivate {
@@ -23,7 +23,15 @@ export class AuthJwtGuard implements CanActivate {
                 Logger.error(`[이메일 형식이 아님] 요청 아이피: ${reqAddress}`, AuthJwtGuard.name)
                 return false
             }
-            req.user = { email }
+
+            if("code" in res) req.user = { 
+                email, 
+                auth: {
+                code: res.code,
+                authority: (res as IPayload.IPayloadEmployee).authority,
+            }}
+            else req.user = { email }
+
             return true
         } else {
             Logger.error(`[유효하지 않은 접근 방법] 요청 아이피: ${reqAddress}`, AuthJwtGuard.name)

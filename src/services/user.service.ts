@@ -87,7 +87,7 @@ export class UserService {
                 const result = await this.authService.verifyPass(findUser, args.password)
                 if(!result) return ERROR.NonAuthoritativeInformation
 
-                const { accessToken } = await this.authService.publishToken({ email: findUser.email })
+                const { accessToken } = await this.authService.publishToken(findUser)
                 return {
                     data: { user: UserDto.fromEntity(findUser), accessToken },
                     statuscode: 200,
@@ -98,7 +98,7 @@ export class UserService {
             const result = await this.authService.verifyPass(findUser, args.password)
             if(!result) return ERROR.NonAuthoritativeInformation
             
-            const { accessToken } = await this.authService.publishToken({ email: findUser.email })
+            const { accessToken } = await this.authService.publishToken(findUser)
             return {
                 data: { user: UserDto.fromEntity(findUser), accessToken },
                 statuscode: 200,

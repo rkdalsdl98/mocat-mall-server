@@ -10,6 +10,7 @@ import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";
 import { ERROR } from "src/common/form/response.form";
+import { AuthorityEntity } from "src/entity/authority.entity";
 
 @Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
@@ -29,6 +30,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         return (await this.user.findMany({
             include: {
                 orders: true,
+                authority: true,
             },
             where: {
                 id: args?.id,
@@ -48,6 +50,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         const user = await this.user.findUnique({
             include: {
                 orders: true,
+                authority: true,
             },
             where: {
                 id: args.id,
@@ -200,7 +203,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                 }
             }),
             createdAt: v.createdAt,
-            isAdmin: v.isAdmin,
+            authority: v.authority,
         } as UserEntity
     }
 }
