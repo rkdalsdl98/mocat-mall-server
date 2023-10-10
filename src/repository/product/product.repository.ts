@@ -26,7 +26,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         return (await this.product.findMany({ include: { productDetail: true }})
         .catch(err => {
             Logger.error(`상품 조회 실패`, err.toString(), ProductRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw  ERROR.ServerDatabaseError 
         }))
         .map(e => this.toEntity(e))
     }
@@ -38,7 +38,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         })
         .catch(err => {
             Logger.error(`상품 조회 실패`, err.toString(), ProductRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw  ERROR.ServerDatabaseError 
         }))
     }
 
@@ -64,7 +64,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         })
         .catch(err => {
             Logger.error(`상품 갱신 실패`, err.toString(), ProductRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw  ERROR.ServerDatabaseError 
         }))
     }
 
@@ -72,7 +72,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         await this.product.delete({ where: { id: args.productId } })
         .catch(err => {
             Logger.error(`상품 삭제 실패`, err.toString(), ProductRepository.name)
-            throw typeof ERROR.ServerDatabaseError 
+            throw  ERROR.ServerDatabaseError 
         })
     }
 
@@ -94,7 +94,7 @@ export class ProductRepository extends PrismaClient implements IRepository<Produ
         })
         .catch(err => {
             Logger.error(`상품 등록 실패`, err.toString(), ProductRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw  ERROR.ServerDatabaseError 
         }))
     }
 

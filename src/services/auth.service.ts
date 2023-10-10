@@ -3,17 +3,21 @@ import { JwtAuthFactory } from "src/common/jwt/jwt_auth.factory";
 import { IPayload } from "src/interface/jwt/ipayload";
 import { UserEntity } from "src/entity/user.entity";
 import { ResponseFailedForm } from "src/common/form/response.form";
-import { 
-    publishAdminAuthority,
-    publicVerify,
-    privateVerify,
-} from "src/common/authority/admin.authority";
+import { AdminAuthority } from "src/common/authority/admin.authority";
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly jwtAuthFactory: JwtAuthFactory,
     ){}
+
+    private verifyCode(
+        salt: string,
+        code: string,
+        comparecode: string,
+    ) : boolean {
+        return AdminAuthority.privateVerify(salt,code,comparecode)
+    }
 
     generateRandStr(
         strLen?: number,
@@ -27,12 +31,22 @@ export class AuthService {
         return this.jwtAuthFactory.encryption(pass)
     }
 
-    verifyCode(
-        salt: string,
-        code: string,
-        comparecode: string,
+    checkAuthority(
+        employee?: UserEntity,
+        employeePayload?: IPayload.IPayloadEmployee
     ) : boolean {
-        return privateVerify(salt,code,comparecode)
+        if( employee === undefined 
+            ||
+            employeePayload === undefined
+            ||
+            employee.authority === null
+            || 
+            (!this.verifyCode(
+                employee.authority.salt, 
+                employeePayload.code!, 
+                employee.authority.code
+            ) && employeePayload.authority === "none")) false
+        return true
     }
 
     async verifyPass(user: UserEntity, pass: string) : Promise<boolean> {
@@ -51,7 +65,7 @@ export class AuthService {
             if("code" in result.payload) {
                 const { code } = result.payload as IPayload.IPayloadEmployee
                 if(code === undefined) return result.payload
-                const authVerify = publicVerify(code)
+                const authVerify = AdminAuthority.publicVerify(code)
                 if("authority" in authVerify) {
                     result.payload['authority'] = authVerify.authority
                     result.payload['code'] = authVerify.code
@@ -65,7 +79,7 @@ export class AuthService {
         const { authority: userAuth } = user
         if(userAuth === null) return this.jwtAuthFactory.publishToken({ email: user.email })
         else {
-            const result = publishAdminAuthority(userAuth.type, userAuth.code)
+            const result = AdminAuthority.publishAdminAuthority(userAuth.type, userAuth.code)
             if(result === null) return this.jwtAuthFactory.publishToken({ email: user.email })
             else return this.jwtAuthFactory.publishToken({ email: user.email, code: result.authoritycode })
         }

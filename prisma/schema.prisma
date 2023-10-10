@@ -35,15 +35,22 @@ model coupon {
 model qaboard {
   id Int @id @default(autoincrement())
   title String @default("배송관련 문의")
-  contentText String
-  productId Int @default(-1) // 기본 값 -1은 선택된 상품 없음
-                             // 할당 된 아이디로 조인 검색
-  visited Int @default(0)
+  answerState String @default("대기중")
   writerEmail String
   writerName String
+  assignProduct qaboardonproduct[]
   reply reply[] @relation("Replys")
+  contentText String
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+}
+
+model qaboardonproduct {
+  qabard qaboard @relation(fields: [qaId], references: [id], onDelete: Cascade)
+  qaId Int
+  product product @relation(fields: [productId], references: [id])
+  productId Int
+  assignAt DateTime @default(now())
+  @@id([qaId, productId])
 }
 
 model reply {
@@ -54,7 +61,6 @@ model reply {
   qaboard qaboard @relation("Replys", fields: [boardId], references: [id], onDelete: Cascade)
   boardId Int
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model product {
@@ -63,6 +69,7 @@ model product {
   price Int @default(0)
   thumbnail String @default("https://firebasestorage.googleapis.com/v0/b/mocatmall.appspot.com/o/exception%2Fnotfound.PNG?alt=media&token=1af683ff-9a2b-4ca2-aea4-98c742c22235")
   productDetail productdetail? @relation("Detail")
+  assignQABoard qaboardonproduct[]
 }
 
 model productdetail {

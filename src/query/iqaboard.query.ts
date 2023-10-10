@@ -7,7 +7,7 @@ export interface IQABoardQuery extends IOptionsQuery {
 export namespace IQABoardQuery {
     export interface IQABoardQueryCreateOptions {
         readonly title?: string & tags.MaxLength<20>
-        readonly productId?: number & tags.Type<"uint32">
+        readonly productIds?: number[]
         readonly contentText: string & tags.MaxLength<50>
         readonly writerEmail: string & tags.Format<"email">
         readonly writerName: string & tags.MaxLength<10>

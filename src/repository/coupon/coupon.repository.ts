@@ -28,7 +28,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         })
         .catch(err => { 
             Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw  ERROR.ServerDatabaseError 
         }))
         .map(e => {
             return this.toEntity(e)
@@ -45,7 +45,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         })
         .catch(err => {
             Logger.error(`쿠폰 정보 조회 실패`, err.toString(), CouponRepository.name) 
-            throw typeof ERROR.ServerDatabaseError
+            throw  ERROR.ServerDatabaseError
         })
     }
 
@@ -57,7 +57,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
         })
         .catch(err => {
             Logger.error(`유저 쿠폰 등록 실패`, err.toString(), CouponRepository.name) 
-            throw typeof ERROR.ServerDatabaseError
+            throw  ERROR.ServerDatabaseError
         })
     }
 
@@ -67,7 +67,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
             where: { couponNumber: args.couponnumber }
         }).catch(err => {
             Logger.error(`쿠폰 정보 삭제 실패`, err.toString(), CouponRepository.name) 
-            throw typeof ERROR.ServerDatabaseError
+            throw  ERROR.ServerDatabaseError
          })
     }
 
@@ -81,7 +81,7 @@ export class CouponRepository extends PrismaClient implements IRepository<Coupon
             }
         }).catch(err => {
             Logger.error(`쿠폰 정보 등록 실패`, err.toString(), CouponRepository.name) 
-            throw typeof ERROR.ServerDatabaseError
+            throw ERROR.ServerDatabaseError
         }))
     }
 

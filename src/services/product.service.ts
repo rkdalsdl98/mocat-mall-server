@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { ProductRepository } from "src/repository/product/product.repository";
 import RedisService from "./redis.service";
 import { ProductDto } from "src/dto/product.dto";
@@ -17,8 +17,14 @@ export class ProductService {
         private readonly productRepository: ProductRepository,
         private readonly redisService: RedisService,
         private readonly authService: AuthService,
-    ){}
+    ){this.initialized()}
 
+    async initialized() : Promise<void> {
+        const products = await this.productRepository.get()
+        await this.redisService.set("products", products, ProductService.name)
+        .then(_=> Logger.log("상품 캐시 동기화", ProductService.name))
+    }
+    
     async getProducts() : Promise<TryCatch<
     ProductDto[]
     ,
@@ -74,7 +80,7 @@ export class ProductService {
             const users = await this.redisService.get<UserEntity[]>("users", ProductService.name)
             if(!users) return ERROR.ServiceUnavailableException
             const employee = users.find(u => u.email === employeePayload.email)
-            const check = this.checkAuthority(employee, employeePayload)
+            const check = this.authService.checkAuthority(employee, employeePayload)
             if(check) {
                 const entity = await this.productRepository.create(data)
                 let caches = await this.redisService.get<ProductEntity[]>("products", ProductService.name)
@@ -110,7 +116,7 @@ export class ProductService {
             const users = await this.redisService.get<UserEntity[]>("users", ProductService.name)
             if(!users) return ERROR.ServiceUnavailableException
             const employee = users.find(u => u.email === employeePayload.email)
-            const check = this.checkAuthority(employee, employeePayload)
+            const check = this.authService.checkAuthority(employee, employeePayload)
             if(check) {
                 const entity = await this.productRepository.updateBy(data, args)
                 let caches = await this.redisService.get<ProductEntity[]>("products", ProductService.name)
@@ -142,7 +148,7 @@ export class ProductService {
             const users = await this.redisService.get<UserEntity[]>("users", ProductService.name)
             if(!users) return ERROR.ServiceUnavailableException
             const employee = users.find(u => u.email === employeePayload.email)
-            const check = this.checkAuthority(employee, employeePayload)
+            const check = this.authService.checkAuthority(employee, employeePayload)
             if(check) {
                 let caches = await this.redisService.get<ProductEntity[]>("products", ProductService.name)
                 if(caches) {
@@ -153,23 +159,5 @@ export class ProductService {
                 return { statuscode: 200, data: true }
             } else return ERROR.UnAuthorized
         } catch(e) { return e }
-    }
-
-    checkAuthority(
-        employee?: UserEntity,
-        employeePayload?: IPayload.IPayloadEmployee
-    ) : boolean {
-        if( employee === undefined 
-            ||
-            employeePayload === undefined
-            ||
-            employee.authority === null
-            || 
-            (!this.authService.verifyCode(
-                employee.authority.salt, 
-                employeePayload.code!, 
-                employee.authority.code
-            ) && employeePayload.authority === "none")) false
-        return true
     }
 }

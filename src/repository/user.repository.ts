@@ -10,7 +10,7 @@ import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";
 import { ERROR } from "src/common/form/response.form";
-import { AuthorityEntity } from "src/entity/authority.entity";
+import { AssignQAProduct } from "src/entity/assign_qaproduct.entity";
 
 @Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {
@@ -39,7 +39,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => { 
             Logger.error(`유저 정보 조회 실패`, err.toString(), UserRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw ERROR.ServerDatabaseError 
         }))
         .map(e => {
             return this.toEntity(e)
@@ -59,7 +59,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => { 
             Logger.error(`유저 정보 조회 실패`, err.toString(), UserRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw ERROR.ServerDatabaseError 
         })
         if(user) {
             return this.toEntity(user)
@@ -84,7 +84,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`유저 정보 업데이트 실패`, err.toString(), UserRepository.name)  
-            throw typeof ERROR.ServerDatabaseError 
+            throw ERROR.ServerDatabaseError 
          }))
     }
 
@@ -97,7 +97,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`유저 정보 삭제 실패`, err.toString(), UserRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw ERROR.ServerDatabaseError 
          })
     }
     
@@ -116,7 +116,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`유저 정보 등록 실패`, err.toString(), UserRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw ERROR.ServerDatabaseError 
         })
         return this.toEntity(user)
     }
@@ -133,7 +133,7 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
         })
         .catch(err => {
             Logger.error(`쿠폰 등록 실패`, err.toString(), UserRepository.name) 
-            throw typeof ERROR.ServerDatabaseError 
+            throw ERROR.ServerDatabaseError 
         }))
     }
 
@@ -183,7 +183,15 @@ export class UserRepository extends PrismaClient implements IRepository<UserEnti
                         title: item['title'],
                         contentText: item['contentText'],
                         productId: item['productId'] ?? undefined,
-                        visited: item['visited'], 
+                        answerState: item['answerState'],
+                        assignProduct: v.assignproduct !== null 
+                        ? {
+                            productId: v.assignproduct['productId'],
+                            productName: v.assignproduct['productName'],
+                            price: v.assignproduct['price'],
+                            thumbnail: v.assignproduct['thumbnail'],
+                        } as AssignQAProduct
+                        : undefined,
                         createdAt: item['createdAt'],
                     } as QABoardMetaEntity
                 }

@@ -1,6 +1,9 @@
 import { TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
-import { Controller } from "@nestjs/common";
+import { Controller, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { JwtDecorator } from "src/common/decorators/jwt.decorator";
+import { ResponseFailedForm, TryCatch } from "src/common/form/response.form";
+import { AuthJwtGuard } from "src/common/guards/auth.guard";
 import { QABoardDto } from "src/dto/qaboard.dto";
 import { IQABoardQuery } from "src/query/iqaboard.query";
 import { QABoardService } from "src/services/qaboard.service";
@@ -19,7 +22,10 @@ export class QABoardController {
      * @returns 질문글 리스트
      */
     @TypedRoute.Get()
-    async getBoards() : Promise<QABoardDto[] | undefined> {
+    async getBoards() : Promise<TryCatch<
+    QABoardDto[]
+    ,
+    ResponseFailedForm>> {
         return await this.qaboardService.getQABoards()
     }
 
@@ -31,7 +37,12 @@ export class QABoardController {
     @TypedRoute.Get("/:boardId")
     async getBoardBy(
         @TypedParam("boardId") boardId : number
-    ) : Promise<QABoardDto | null | undefined> {
+    ) : Promise<TryCatch<
+    | QABoardDto
+    | null
+    | undefined
+    ,
+    ResponseFailedForm>> {
         return await this.qaboardService.getQABoardBy({ boardId })
     }
 
@@ -42,9 +53,12 @@ export class QABoardController {
      */
     @TypedRoute.Post()
     async createBoard(
-        @TypedQuery() query: IQABoardQuery
-    ) : Promise<void> {
-        return 
+        @TypedQuery() query: IQABoardQuery.IQABoardQueryCreateOptions
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    ResponseFailedForm>> {
+        return await this.qaboardService.createQABoard({ ...query })
     }
 
     /**
@@ -53,14 +67,21 @@ export class QABoardController {
      * @security bearer
      */
     @TypedRoute.Patch()
+    @UseGuards(AuthJwtGuard)
     async updateBoard(
+        @JwtDecorator.GetTokenAndPayload() data : { payload: Object, token: string },
         @TypedQuery() query: IQABoardQuery.IQABoardQueryUpdateOtions
-    ) : Promise<void> {
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    ResponseFailedForm>> {
+        if("type" in data.payload && "response" in data.payload) 
+            return data.payload.response as ResponseFailedForm
         return await this.qaboardService.updateQABoardBy({
             title: query.title,
             contentText: query.contentText,
             productId: query.productId,
-        }, { boardId: query.boardId })
+        }, { boardId: query.boardId }, data.payload)
     }
 
     /**
@@ -69,9 +90,16 @@ export class QABoardController {
      * @security bearer
      */
     @TypedRoute.Delete()
+    @UseGuards(AuthJwtGuard)
     async deleteBoard(
+        @JwtDecorator.GetTokenAndPayload() data : { payload: Object, token: string },
         @TypedQuery() query: IQABoardQuery
-    ) : Promise<void> {
-        return await this.qaboardService.deleteQABoard({ boardId: query.boardId })
+    ) : Promise<TryCatch<
+    boolean
+    ,
+    ResponseFailedForm>> {
+        if("type" in data.payload && "response" in data.payload) 
+            return data.payload.response as ResponseFailedForm
+        return await this.qaboardService.deleteQABoard({ boardId: query.boardId }, data.payload)
     }
 }

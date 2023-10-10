@@ -1,3 +1,4 @@
+import { AssignQAProduct } from "src/entity/assign_qaproduct.entity";
 import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";
 
 export class QABoardMetaDto {
@@ -5,8 +6,9 @@ export class QABoardMetaDto {
         readonly boardId: number,
         readonly title: string,
         readonly contentText: string,
-        readonly visited: number,
+        readonly answerState: string,
         readonly createdAt: Date,
+        readonly assignProduct?: AssignQAProduct,
     ){}
 
     // 추후 엔티티에 변동사항이 생기면 다른 방식으로 리턴 해줘야 함
