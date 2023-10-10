@@ -42,4 +42,4 @@
 
 ## ERD  
 
-![ERD](https://github.com/rkdalsdl98/healthyou-server/assets/77562358/2b4249d7-6ff6-4b22-8878-ee48a04fe1d4)  
+![ERD](https://github.com/rkdalsdl98/mocat-mall-server/assets/77562358/16ab0177-8917-424c-9f4c-6cfcf8554c20)  
