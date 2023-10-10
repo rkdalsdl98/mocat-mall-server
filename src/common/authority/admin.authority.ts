@@ -87,7 +87,7 @@ export const privateVerify = (
     salt: string,
     code: string,
     comparecode: string,
-) => {
+) : boolean => {
     const { hash } = encryption(code, salt)
     const { hash: comparehash } = encryption(comparecode, salt)
     return hash !== comparehash

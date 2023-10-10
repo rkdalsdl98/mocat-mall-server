@@ -6,6 +6,7 @@ import { ResponseFailedForm } from "src/common/form/response.form";
 import { 
     publishAdminAuthority,
     publicVerify,
+    privateVerify,
 } from "src/common/authority/admin.authority";
 
 @Injectable()
@@ -24,6 +25,14 @@ export class AuthService {
 
     encryptionPass(pass: string) : { salt: string, hash: string } {
         return this.jwtAuthFactory.encryption(pass)
+    }
+
+    verifyCode(
+        salt: string,
+        code: string,
+        comparecode: string,
+    ) : boolean {
+        return privateVerify(salt,code,comparecode)
     }
 
     async verifyPass(user: UserEntity, pass: string) : Promise<boolean> {
