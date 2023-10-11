@@ -10,7 +10,6 @@ import { OrderEntity } from "src/entity/order.entity";
 import { DeliveryEntity } from "src/entity/delivery.entity";
 import { QABoardMetaEntity } from "src/entity/qaboard_meta.entity";
 import { ERROR } from "src/common/form/response.form";
-import { AuthorityEntity } from "src/entity/authority.entity";
 
 @Injectable()
 export class UserRepository extends PrismaClient implements IRepository<UserEntity>, OnModuleInit, OnModuleDestroy {

@@ -41,14 +41,13 @@ export class QABoardRepository extends PrismaClient implements IRepository<QABoa
         })
 
         if(board) this.toEntity(board)
-        return board
+        return null
     }
     async updateBy(data: QABoardUpdateOptions, args: QABoardFindOptions): Promise<QABoardEntity | undefined> {
         return this.toEntity(await this.qaboard.update({
             where: { id: args.boardId },
             data: {
                 title: data.title,
-                productId: data.productId,
                 contentText: data.contentText,
             },
             include: { reply: true }
